@@ -56,7 +56,8 @@ LAWSON 需要一个可长期运营的个人技术站点，向正在学习 AI 与
 - 公开内容只有草稿和已发布两态。发布即时生效；首发不提供定时发布、版本历史或多人审核。
 - GitHub OAuth 认证后，服务端以稳定 GitHub 用户 ID 判断唯一作者身份；绝不能仅以“已登录”、用户名或用户可编辑 metadata 授权。
 - 公开访问只读取已发布内容；作者后台与写入操作仅限唯一作者。所有暴露给数据 API 的表启用 RLS，并按实际访问模型制定策略。
-- 自动导入为受限 HTTP 接口。调用方使用独立、可轮换的长随机导入密钥；接口仅可创建或更新草稿，不可发布、读取私有内容、使用 Supabase `service_role` 或越过数据库授权边界。
+- 自动导入为受限 HTTP 接口。调用方使用独立、可轮换的长随机导入密钥；接口仅可创建或更新草稿，不可发布、读取私有内容、持有 Supabase `service_role` 或越过数据库授权边界。
+- 自动导入由受信任的服务端执行器在校验导入密钥后处理。agent 永不获得 `service_role` 或数据库连接；为安全写入受管图片，执行器可在服务端持有 `service_role`，且只可执行受限导入流程，不能读取私有内容或发布。详情见 `technical-design.md` 与 ADR 0001。
 - 导入包通过 `multipart/form-data` 上传一份 Markdown 及其相对路径图片。服务端校验密钥、文件类型、大小、相对路径和 Markdown front matter，上传图片到受管存储，再将正文引用改写为受管 URL。
 - 导入文档强制包含 `externalId`。相同 ID 更新既有草稿；若目标为已发布内容，则生成待审核更新草稿，不覆盖公开内容。
 - Markdown 支持标题、列表、链接、引用、表格、代码块和图片；禁止原始 HTML 和脚本。代码块支持语法高亮和复制。
@@ -66,6 +67,10 @@ LAWSON 需要一个可长期运营的个人技术站点，向正在学习 AI 与
 - SEO 基线包括稳定 URL、标题和摘要元数据、Open Graph 图、sitemap、RSS、canonical URL。GEO 基线包括语义化标题、明确问题回答、作者与日期、外部事实来源、`Article`、`Person` 和 `Project` 结构化数据。
 - 首发公开联系入口只含 GitHub、LinkedIn、邮箱和 RSS；不实现邮件订阅、站内消息、评论或用户账户。
 - 首发使用设计规范定义的 `Geist` 无衬线字体、间距、圆角和边框 token；新页面与组件不得自行定义未记录的颜色、字号、圆角或动效变体。
+- 浏览器与 Client Component 通过 Next.js Route Handler（`/api/*`）读取和写入后端数据；Server Component、metadata、sitemap 与 RSS 直接调用同一领域模块，不请求本站自己的 Route Handler，以保留构建期预渲染并避免内部 HTTP 往返。
+- Route Handler 负责 HTTP、认证与输入输出映射；可使用 Zod 校验所有不可信输入，业务规则仍封装在领域模块中。
+- 页面过长时优先拆为该路由私有的页面级组件；只有已经在多个页面稳定复用的视觉或交互模式才提升为全局组件。
+- 所有页面与组件样式统一使用 Tailwind CSS，并遵循 `DESIGN.md` 的 token、间距、断点和动效规则；不新增 CSS Modules、CSS-in-JS 或页面内联样式。`app/globals.css` 只承载 Tailwind 入口、设计 token 与必要的全局基础规则。
 
 ## Testing Decisions
 
@@ -77,6 +82,8 @@ LAWSON 需要一个可长期运营的个人技术站点，向正在学习 AI 与
 - Supabase 迁移和 RLS 以数据库级验证确认：匿名访问只能读取已发布内容，作者权限限定写入，导入边界不能获得服务角色权限。
 - 延续现有公开首页 Playwright smoke test，并按新增用户可见路径扩展 e2e；静态门槛为 lint、类型检查、生产构建和 e2e。
 - 每个公开页面在 `320px`、`768px`、`1024px`、`1440px` 检查；视觉验收遵从 `DESIGN.md`，并检查无横向滚动、清晰焦点、有效 alt 文本与可读对比度。
+- 实现遵循已确认的 `technical-design.md`：公开 canonical URL 使用 `/{locale}/...`（首发 `zh-CN`，无 locale 入口重定向）；内容以 identity 下的当前草稿与当前已发布 variant 建模，不保留版本历史。
+- Route Handler 契约测试覆盖 Zod 校验、认证、状态码与 DTO；领域模块测试覆盖业务规则，Server Component 与 metadata 测试不依赖对本站 API 的 HTTP mock。
 
 ## Out of Scope
 
