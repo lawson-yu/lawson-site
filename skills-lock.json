@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "skills": {
+    "crabbox-setup": {
+      "source": "AI-Builder-Club/skills",
+      "sourceType": "github",
+      "skillPath": "skills/crabbox-setup/SKILL.md",
+      "computedHash": "23a7000917f69a6d15af1b17b9d41065b8326420afcf80d6c0bcf6c10bda4267"
+    },
+    "dev-local-setup": {
+      "source": "AI-Builder-Club/skills",
+      "sourceType": "github",
+      "skillPath": "skills/dev-local-setup/SKILL.md",
+      "computedHash": "6a2d6115660af9371af2bf4179129546e358577a9d9d1df2f5d4bc32d18a6d55"
+    },
+    "e2e-setup": {
+      "source": "AI-Builder-Club/skills",
+      "sourceType": "github",
+      "skillPath": "skills/e2e-setup/SKILL.md",
+      "computedHash": "23467d2cb6e7cc414098b30e9068857902a69431573e18a6d0e836d77713b45c"
+    },
+    "new-loop": {
+      "source": "AI-Builder-Club/skills",
+      "sourceType": "github",
+      "skillPath": "skills/new-loop/SKILL.md",
+      "computedHash": "3fef0aec3d0c094c8de61ce55a1f13fd5511d663af586880d0df7e466679c727"
+    },
+    "setup-codebase-harness": {
+      "source": "AI-Builder-Club/skills",
+      "sourceType": "github",
+      "skillPath": "skills/setup-codebase-harness/SKILL.md",
+      "computedHash": "d9956837cb57902e9ad7c61bd1af6960ea65729d687bb19f30a1551808520440"
+    },
+    "verifier-setup": {
+      "source": "AI-Builder-Club/skills",
+      "sourceType": "github",
+      "skillPath": "skills/verifier-setup/SKILL.md",
+      "computedHash": "6ddd755be504da290a99ec55c07ddc1b47281ffd5e33107f9802b9f4947fcc0b"
+    },
+    "visual-flow-gif": {
+      "source": "AI-Builder-Club/skills",
+      "sourceType": "github",
+      "skillPath": "skills/visual-flow-gif/SKILL.md",
+      "computedHash": "078d687e531bb85f48ab0de7b2bd16a17b6bdfd92899fea174d3dd1ed3f29f9c"
+    }
+  }
+}
