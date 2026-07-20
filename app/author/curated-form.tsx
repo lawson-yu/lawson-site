@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { MediaUpload } from "./media-upload";
+
 import type { CuratedProject } from "@/lib/content/curated";
 import type { WorkspaceTag } from "@/lib/content/workspace";
 
@@ -167,6 +169,7 @@ export function CuratedForm({
           required
         />
       </label>
+      <MediaUpload variantId={project?.id} />
       {error ? (
         <p className="text-accent text-sm" role="alert">
           {error}

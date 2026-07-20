@@ -2,47 +2,26 @@
 
 ## 继续目标
 
-完成 `issues/02-author-workspace-and-blog-management.md`，通过验收、code review、提交并标记 `resolved`；再按依赖继续 03–08。
-
-当前 Goal 仍为 `blocked`：不能在没有真实 GitHub OAuth 作者身份及托管 Supabase 授权配置的情况下完成 Ticket 02 的作者写入 / RLS e2e。用户已要求“继续”，并已打开本地登录页；下一步优先确认其完成登录。
+完整交付 `.scratch/lawson-personal-site/issues/` 中未完成的 06、07、08；每张 ticket 验收通过后标记 `resolved`，最后执行跨 ticket review 与完整回归。
 
 ## 当前状态
 
-- 工作目录：`/Users/lawson/Project/MyProjest/lawson-site`
-- 任务图谱：`issues/`；02 是下一张可执行 ticket，03–08 仍依赖 02。
-- Ticket 02 实现、迁移、作者路由与 UI 已提交为 `1a777b1` 并推送 `origin/main`。
-- 已移除 `next/font/google` Geist，改 `app/globals.css` 系统字体栈；生产构建不再请求 Google Fonts。
-- 本地栈可用：`scripts/dev-local.sh status` 显示 `lawson-site-dev` / `:3000`。若状态漂移，先按 `.agents/skills/dev-local/SKILL.md` 检查。
+- 工作目录：`/Users/lawson/Projects/MyProject/lawson-site`。
+- 01–05 已 `resolved`；Ticket 06 的完成前工作安全暂存在 `stash@{0}`，待 05 commit 后恢复。
+- 当前任务约定为串行执行，避免共享工作目录冲突：06 → 07 → 08。
+- Ticket 05 migration `20260720153341_managed_media.sql` 已由 `pnpm exec supabase db push --linked` 应用到 linked 测试 Supabase 项目；不要重复应用或改生产项目。
+- 本地站点使用 `scripts/dev-local.sh`，默认 `http://localhost:3000`；托管 Supabase 不使用本地 Docker。
 
-## 已验证
+## Ticket 05 交付与验证
 
-- `fnm exec --using v24.15.0 pnpm verify`：通过。
-- `fnm exec --using v24.15.0 pnpm build`：通过。
-- `fnm exec --using v24.15.0 pnpm test:e2e`：3/3 通过（匿名写入拒绝、匿名工作区拦截、公开阅读）。
-- `fnm exec --using v24.15.0 pnpm test:rls`：通过（现有匿名公开读取 RLS 检查）。
-- `git diff --check`：通过。
-
-这些只覆盖匿名 / 公开路径；不要误作完整 Ticket 02 验收。
-
-## 当前人工交接点
-
-- Chrome 中保留了一张本地 `http://localhost:3000/auth/login?error=unauthorized` handoff tab。
-- 请用户在该页点击“使用 GitHub 登录”并完成 OAuth；不要索要、读取或输出密钥。
-- 回调若仍为 `unauthorized`，需要用户在托管 Supabase 完成技术设计指定的外部配置：`AUTHOR_GITHUB_ID`，以及该 OAuth 用户对应的唯一 `author_profiles` 行。原 Goal 不允许 agent 改外部服务。
-- 用户确认 `/author` 可访问后，运行作者完整流程：创建草稿、编辑、预览、发布、创建编辑草稿 / 再发布、撤回、确认 pending tag；同时验证非作者写入拒绝与公开可见性。完成后补足稳定 e2e / RLS 证据，再 review、commit、更新 ticket 状态。
+- 私有 `content-media` Storage bucket、draft-only 媒体记录/RLS、三类作者编辑器上传与删除控件、受限公开/草稿 signed URL。
+- 编辑草稿会复制媒体引用并重写 Markdown URL；再次发布后图片仍可访问，且共享对象只会在最后一个引用删除后清理。
+- 通过：作者/非作者媒体 e2e、`pnpm test:rls`、`pnpm verify`、`pnpm build`、`git diff --check`，以及最终 Standards + Spec `$code-review`。
 
 ## 重要边界
 
-- 先读根 `AGENTS.md`、`spec.md`、`technical-design.md`、02 ticket；`issues/` 是执行图谱。
-- 仅改当前 ticket；不部署、不推送、不改生产或外部服务；不得读取、输出或提交 `.env*` / 密钥。
-- 真实权限证明不得用 `service_role` 伪造。参见 `technical-design.md` 的 OAuth、RLS 与测试策略章节。
-- 只在 Ticket 02 验收完成后继续修改 ticket 状态。
-
-## 建议 skills
-
-- `$implement`：按 ticket 收尾、验证、review、commit。
-- `$supabase:supabase`：OAuth、RLS、迁移和安全核查。
-- `$dev-local`：本地 Next.js 栈状态异常时。
-- `$code-review`：Ticket 02 验收完成后的 standards + spec review。
-- `$tdd`：补作者流程的稳定测试时。
-- `$caveman`：若用户继续要求极简中文沟通。
+- 先读根 `AGENTS.md`、`spec.md`、`technical-design.md`、当前 ticket；优先使用 codebase-memory-mcp 导航代码。
+- 使用 `pnpm` 与 Node `>=24 <25`。本机未安装 `fnm` 的 v24.15.0；当前 Node 24.14.1 仍符合项目 engine。若严格需要该精确版本，先安装后再跑最终门禁。
+- 不读取、输出或提交 `.env*`、密钥或 `evidence/`；不部署、不推送、不改生产或未明确授权的外部服务。
+- Supabase client 仅由 `lib/supabase/` 创建；不要在页面直接导入 `@supabase/ssr`。导入调用方绝不能取得 service role、数据库连接、私有内容或通用数据操作能力。
+- 每张 ticket 仅在独立验收（含相关 e2e/RLS、`pnpm verify`、`pnpm build`、`git diff --check`）通过后更新 Status；最后执行完整 `pnpm test:e2e`。

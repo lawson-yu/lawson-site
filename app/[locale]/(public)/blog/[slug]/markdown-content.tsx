@@ -11,7 +11,7 @@ export function MarkdownContent({ markdown }: { markdown: string }) {
       components={{
         a: ({ children, href }) => (
           <a
-            className="text-brand underline decoration-brand/60 underline-offset-4 hover:decoration-brand"
+            className="text-brand decoration-brand/60 hover:decoration-brand underline underline-offset-4"
             href={href}
             rel="noreferrer"
             target={href?.startsWith("http") ? "_blank" : undefined}
@@ -20,7 +20,7 @@ export function MarkdownContent({ markdown }: { markdown: string }) {
           </a>
         ),
         blockquote: ({ children }) => (
-          <blockquote className="my-8 border-l-2 border-accent pl-5 text-lg leading-8 text-ink">
+          <blockquote className="border-accent text-ink my-8 border-l-2 pl-5 text-lg leading-8">
             {children}
           </blockquote>
         ),
@@ -28,19 +28,41 @@ export function MarkdownContent({ markdown }: { markdown: string }) {
           const language = className?.replace("language-", "");
 
           if (language) {
-            return <CodeBlock code={String(children).replace(/\n$/, "")} language={language} />;
+            return (
+              <CodeBlock
+                code={String(children).replace(/\n$/, "")}
+                language={language}
+              />
+            );
           }
 
           return (
-            <code className="rounded bg-surface-raised px-1.5 py-0.5 font-mono text-sm text-action">
+            <code className="bg-surface-raised text-action rounded px-1.5 py-0.5 font-mono text-sm">
               {children}
             </code>
           );
         },
-        h1: ({ children }) => <h2 className="mt-12 text-3xl font-bold">{children}</h2>,
-        h2: ({ children }) => <h2 className="mt-12 text-3xl font-bold">{children}</h2>,
-        h3: ({ children }) => <h3 className="mt-8 text-xl font-bold">{children}</h3>,
-        p: ({ children }) => <p className="my-6 leading-8 text-muted">{children}</p>,
+        h1: ({ children }) => (
+          <h2 className="mt-12 text-3xl font-bold">{children}</h2>
+        ),
+        h2: ({ children }) => (
+          <h2 className="mt-12 text-3xl font-bold">{children}</h2>
+        ),
+        h3: ({ children }) => (
+          <h3 className="mt-8 text-xl font-bold">{children}</h3>
+        ),
+        img: ({ alt, src }) => (
+          // Markdown's image alt is preserved rather than inferred from the filename.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            alt={alt || "内容图片"}
+            className="border-line my-8 max-w-full border"
+            src={src}
+          />
+        ),
+        p: ({ children }) => (
+          <p className="text-muted my-6 leading-8">{children}</p>
+        ),
         pre: ({ children }) => <>{children}</>,
       }}
       remarkPlugins={[remarkGfm]}

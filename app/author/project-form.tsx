@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { MediaUpload } from "./media-upload";
+
 import type { Project } from "@/lib/content/projects";
 import type { WorkspaceTag } from "@/lib/content/workspace";
 
@@ -70,6 +72,7 @@ export function ProjectForm({
           required
         />
       </label>
+      <MediaUpload variantId={project?.id} />
       <label className="grid gap-2 text-sm font-semibold">
         URL slug
         <input

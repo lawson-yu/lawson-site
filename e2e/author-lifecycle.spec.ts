@@ -57,7 +57,7 @@ test.describe("作者博客生命周期", () => {
   );
   test.use({ storageState: authorStorageState });
 
-  test("创建、发布、编辑发布并下架博客", async ({ page }) => {
+  test("创建、发布、编辑发布并下架博客", async ({ page, browser }) => {
     const suffix = Date.now().toString(36);
     const slug = `e2e-author-lifecycle-${suffix}`;
     const title = `E2E 作者生命周期 ${suffix}`;
@@ -92,6 +92,108 @@ test.describe("作者博客生命周期", () => {
       await expect(page).toHaveURL(/\/author\/blog\/[0-9a-f-]{36}$/);
       const firstVariantId = page.url().split("/").at(-1)!;
 
+      const mediaUpload = page
+        .getByRole("group", { name: "添加受管图片" })
+        .first();
+      await expect(mediaUpload).toBeVisible();
+      await mediaUpload.getByLabel("选择图片").setInputFiles({
+        buffer: Buffer.from(
+          "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL4VQAAAABJRU5ErkJggg==",
+          "base64",
+        ),
+        mimeType: "image/png",
+        name: "e2e.png",
+      });
+      await mediaUpload.getByLabel("图片替代文本").fill("E2E 受管图片");
+      const uploadResponse = page.waitForResponse(
+        (response) =>
+          new URL(response.url()).pathname === "/api/author/media" &&
+          response.request().method() === "POST",
+      );
+      await mediaUpload
+        .getByRole("button", { name: "上传并插入 Markdown" })
+        .click();
+      const uploaded = await uploadResponse;
+      expect(uploaded.status()).toBe(201);
+      const assetId = ((await uploaded.json()) as { id: string }).id;
+      await expect(page.getByLabel("Markdown 正文").first()).toHaveValue(
+        new RegExp(`/media/${firstVariantId}/`),
+      );
+      const draftMedia = await page.request.get(
+        `/media/${firstVariantId}/${assetId}`,
+      );
+      expect(draftMedia.status()).toBe(200);
+      const saveMediaResponse = page.waitForResponse(
+        (response) =>
+          new URL(response.url()).pathname ===
+            `/api/author/blogs/${firstVariantId}` &&
+          response.request().method() === "PATCH",
+      );
+      await page.getByRole("button", { name: "保存草稿" }).click();
+      expect((await saveMediaResponse).status()).toBe(200);
+      const referencedDelete = await page.request.delete("/api/author/media", {
+        data: { assetId, variantId: firstVariantId },
+      });
+      expect(referencedDelete.status()).toBe(400);
+      await mediaUpload.getByLabel("选择图片").setInputFiles({
+        buffer: Buffer.from(
+          "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL4VQAAAABJRU5ErkJggg==",
+          "base64",
+        ),
+        mimeType: "image/png",
+        name: "removable.png",
+      });
+      await mediaUpload.getByLabel("图片替代文本").fill("待删除图片");
+      const removableResponse = page.waitForResponse(
+        (response) =>
+          new URL(response.url()).pathname === "/api/author/media" &&
+          response.request().method() === "POST",
+      );
+      await mediaUpload
+        .getByRole("button", { name: "上传并插入 Markdown" })
+        .click();
+      const removable = await removableResponse;
+      expect(removable.status()).toBe(201);
+      const removableAsset = (await removable.json()) as {
+        id: string;
+        markdown: string;
+      };
+      const body = page.getByLabel("Markdown 正文").first();
+      await body.fill(
+        (await body.inputValue()).replace(removableAsset.markdown, ""),
+      );
+      const saveUnreferencedResponse = page.waitForResponse(
+        (response) =>
+          new URL(response.url()).pathname ===
+            `/api/author/blogs/${firstVariantId}` &&
+          response.request().method() === "PATCH",
+      );
+      await page.getByRole("button", { name: "保存草稿" }).click();
+      expect((await saveUnreferencedResponse).status()).toBe(200);
+      const deleted = await page.request.delete("/api/author/media", {
+        data: { assetId: removableAsset.id, variantId: firstVariantId },
+      });
+      expect(deleted.status()).toBe(204);
+      expect(
+        (
+          await page.request.get(
+            `/media/${firstVariantId}/${removableAsset.id}`,
+          )
+        ).status(),
+      ).toBe(404);
+      expect(
+        existsSync("evidence/auth/non-author.json"),
+        "媒体权限验收需要非作者登录态",
+      ).toBeTruthy();
+      const nonAuthor = await browser.newContext({
+        storageState: "evidence/auth/non-author.json",
+      });
+      const nonAuthorDraftMedia = await nonAuthor.request.get(
+        `/media/${firstVariantId}/${assetId}`,
+      );
+      expect(nonAuthorDraftMedia.status()).toBe(404);
+      await nonAuthor.close();
+
       const firstPublishResponse = page.waitForResponse(
         (response) =>
           new URL(response.url()).pathname ===
@@ -103,6 +205,16 @@ test.describe("作者博客生命周期", () => {
 
       await page.goto(`/zh-CN/blog/${slug}`);
       await expect(page.getByRole("heading", { name: title })).toBeVisible();
+      await expect(
+        page.getByRole("img", { name: "E2E 受管图片" }),
+      ).toHaveAttribute("src", new RegExp(`/media/${firstVariantId}/`));
+      const visitor = await browser.newContext();
+      const publicMedia = await visitor.request.get(
+        `/media/${firstVariantId}/${assetId}`,
+      );
+      expect(publicMedia.status()).toBe(200);
+      expect(publicMedia.headers()["content-type"]).toMatch(/^image\//);
+      await visitor.close();
 
       await page.goto(`/author/blog/${firstVariantId}`);
       const editResponse = page.waitForResponse(
@@ -129,6 +241,16 @@ test.describe("作者博客生命周期", () => {
       await editForm.getByRole("button", { name: "保存草稿" }).click();
       expect((await updateResponse).status()).toBe(200);
       await expect(page).toHaveURL(`/author/blog/${editVariantId}`);
+      const copiedMediaMatch = new RegExp(
+        `/media/${editVariantId}/([0-9a-f-]{36})`,
+      ).exec(await editForm.getByLabel("Markdown 正文").inputValue());
+      expect(copiedMediaMatch?.[1]).toBeTruthy();
+      const copiedAssetId = copiedMediaMatch![1];
+      expect(
+        (
+          await page.request.get(`/media/${editVariantId}/${copiedAssetId}`)
+        ).status(),
+      ).toBe(200);
 
       const secondPublishResponse = page.waitForResponse(
         (response) =>
@@ -138,6 +260,23 @@ test.describe("作者博客生命周期", () => {
       );
       await page.getByRole("button", { name: "发布" }).first().click();
       expect((await secondPublishResponse).status()).toBe(200);
+      await page.goto(`/zh-CN/blog/${slug}`);
+      await expect(
+        page.getByRole("img", { name: "E2E 受管图片" }),
+      ).toHaveAttribute(
+        "src",
+        new RegExp(`/media/${editVariantId}/${copiedAssetId}`),
+      );
+      const afterReplacement = await browser.newContext();
+      expect(
+        (
+          await afterReplacement.request.get(
+            `/media/${editVariantId}/${copiedAssetId}`,
+          )
+        ).status(),
+      ).toBe(200);
+      await afterReplacement.close();
+      await page.goto(`/author/blog/${editVariantId}`);
       const unpublishResponse = page.waitForResponse(
         (response) =>
           new URL(response.url()).pathname ===

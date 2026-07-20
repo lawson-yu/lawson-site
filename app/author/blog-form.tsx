@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { MediaUpload } from "./media-upload";
+
 import type { WorkspaceBlog, WorkspaceTag } from "@/lib/content/workspace";
 
 type BlogFormProps = {
@@ -66,6 +68,7 @@ export function BlogForm({ blog, tags }: BlogFormProps) {
           required
         />
       </label>
+      <MediaUpload variantId={blog?.id} />
       <label className="grid gap-2 text-sm font-semibold">
         URL slug
         <input
