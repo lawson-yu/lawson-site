@@ -1,44 +1,48 @@
-# LAWSON Site Handoff
+# Lawson Site Goal handoff
 
-## Next session goal
+## 继续目标
 
-完成技术设计，供用户审阅；技术设计确认后才重新拆 tickets。不要开始实现公开页面、认证、数据库或导入功能。
+完成 `issues/02-author-workspace-and-blog-management.md`，通过验收、code review、提交并标记 `resolved`；再按依赖继续 03–08。
 
-## Current state
+当前 Goal 仍为 `blocked`：不能在没有真实 GitHub OAuth 作者身份及托管 Supabase 授权配置的情况下完成 Ticket 02 的作者写入 / RLS e2e。用户已要求“继续”，并已打开本地登录页；下一步优先确认其完成登录。
 
-- 产品与领域澄清已完成。
-- 产品规格：`spec.md`。
-- 术语、难逆转决策、视觉规范分别在：
-  - `../../CONTEXT.md`
-  - `../../docs/adr/0001-restricted-agent-import.md`
-  - `../../docs/adr/0002-locale-aware-content-from-launch.md`
-  - `../../DESIGN.md`
-- 用户已配置 Supabase 项目、GitHub OAuth provider、Auth 本地 Site URL 与 callback redirect URL，并已创建本地 `.env.local`。未检查或记录任何密钥。
-- 12 个 tickets 曾被提前生成，现已删除；`issues/` 目录不存在。这是有意回退，不要恢复或实现旧 tickets。
-- 尚未改动首页或业务代码。当前规划文档显示为 staged；不要擅自取消暂存、提交或覆盖用户的 git 状态。
+## 当前状态
 
-## Correct workflow recovery
+- 工作目录：`/Users/lawson/Project/MyProjest/lawson-site`
+- 任务图谱：`issues/`；02 是下一张可执行 ticket，03–08 仍依赖 02。
+- Ticket 02 实现、迁移、作者路由与 UI 已提交为 `1a777b1` 并推送 `origin/main`。
+- 已移除 `next/font/google` Geist，改 `app/globals.css` 系统字体栈；生产构建不再请求 Google Fonts。
+- 本地栈可用：`scripts/dev-local.sh status` 显示 `lawson-site-dev` / `:3000`。若状态漂移，先按 `.agents/skills/dev-local/SKILL.md` 检查。
 
-1. 阅读 AGENTS.md、规格、术语、ADR 与 DESIGN.md。
-2. 产出并审阅 `technical-design.md`。
-3. 技术设计必须说明模块、interface、seam、数据模型、RLS、Storage、OAuth/导入/公开读取请求流、前端 fixture 到真实数据的替换方式、测试策略与实现顺序。
-4. 请用户确认技术设计。
-5. 更新规格中的实现决策与测试决策，使其链接或总结技术设计。
-6. 执行 `/to-tickets`，重新生成基于技术设计的 tickets。
-7. 仅在 tickets 重新确认后，执行 `/implement`；UI-first 但保持真实功能纵向切片。
+## 已验证
 
-## Suggested skills
+- `fnm exec --using v24.15.0 pnpm verify`：通过。
+- `fnm exec --using v24.15.0 pnpm build`：通过。
+- `fnm exec --using v24.15.0 pnpm test:e2e`：3/3 通过（匿名写入拒绝、匿名工作区拦截、公开阅读）。
+- `fnm exec --using v24.15.0 pnpm test:rls`：通过（现有匿名公开读取 RLS 检查）。
+- `git diff --check`：通过。
 
-- `codebase-design`：当前技术设计核心，设计深模块、interface 与 seam。
-- `domain-modeling`：技术设计若引入或改变规范术语时更新 CONTEXT.md。
-- `supabase`：涉及 Auth、RLS、Storage、迁移时先查当前官方文档与 changelog。
-- `prototype`：仅当 UI 或状态问题无法靠技术设计决定时使用；原型不进入生产实现。
-- `/to-tickets`：技术设计经用户确认后使用。
-- `/implement`：只在每张 ticket `ready-for-agent` 后使用。
+这些只覆盖匿名 / 公开路径；不要误作完整 Ticket 02 验收。
 
-## Important boundaries
+## 当前人工交接点
 
-- 使用 pnpm、Node 24、Next.js App Router、Supabase client 边界和 Tailwind 约定。
-- 不提交 `.env*`、`evidence/` 或密钥。
-- 自动导入禁止直连数据库或使用 Supabase service role；遵守 ADR 0001。
-- 首发中文、locale-aware 数据模型、单作者 GitHub OAuth、草稿/已发布两态、无自动发布；完整内容决策以 spec 和 CONTEXT.md 为准。
+- Chrome 中保留了一张本地 `http://localhost:3000/auth/login?error=unauthorized` handoff tab。
+- 请用户在该页点击“使用 GitHub 登录”并完成 OAuth；不要索要、读取或输出密钥。
+- 回调若仍为 `unauthorized`，需要用户在托管 Supabase 完成技术设计指定的外部配置：`AUTHOR_GITHUB_ID`，以及该 OAuth 用户对应的唯一 `author_profiles` 行。原 Goal 不允许 agent 改外部服务。
+- 用户确认 `/author` 可访问后，运行作者完整流程：创建草稿、编辑、预览、发布、创建编辑草稿 / 再发布、撤回、确认 pending tag；同时验证非作者写入拒绝与公开可见性。完成后补足稳定 e2e / RLS 证据，再 review、commit、更新 ticket 状态。
+
+## 重要边界
+
+- 先读根 `AGENTS.md`、`spec.md`、`technical-design.md`、02 ticket；`issues/` 是执行图谱。
+- 仅改当前 ticket；不部署、不推送、不改生产或外部服务；不得读取、输出或提交 `.env*` / 密钥。
+- 真实权限证明不得用 `service_role` 伪造。参见 `technical-design.md` 的 OAuth、RLS 与测试策略章节。
+- 只在 Ticket 02 验收完成后继续修改 ticket 状态。
+
+## 建议 skills
+
+- `$implement`：按 ticket 收尾、验证、review、commit。
+- `$supabase:supabase`：OAuth、RLS、迁移和安全核查。
+- `$dev-local`：本地 Next.js 栈状态异常时。
+- `$code-review`：Ticket 02 验收完成后的 standards + spec review。
+- `$tdd`：补作者流程的稳定测试时。
+- `$caveman`：若用户继续要求极简中文沟通。
