@@ -19,11 +19,39 @@ export type PublishedBlog = {
   updatedAt: string;
 };
 
+export const searchableContentKinds = ["blog", "project", "curated"] as const;
+
+export type SearchableContentKind = (typeof searchableContentKinds)[number];
+
+export type PublishedSearchResult = {
+  kind: SearchableContentKind;
+  locale: string;
+  publishedAt: string;
+  slug: string;
+  summary: string;
+  tags: BlogTag[];
+  title: string;
+};
+
+type SearchResultRow = {
+  kind: SearchableContentKind;
+  locale: string;
+  published_at: string;
+  slug: string;
+  summary: string;
+  tags: BlogTag[];
+  title: string;
+};
+
 type ContentVariantRow = {
   body_markdown: string;
   content_items: { kind: "blog" | "curated" | "project" } | null;
   content_tags: Array<{
-    tags: { label: string; slug: string; state: "confirmed" | "pending" } | null;
+    tags: {
+      label: string;
+      slug: string;
+      state: "confirmed" | "pending";
+    } | null;
   }>;
   locale: string;
   published_at: string | null;
@@ -87,10 +115,43 @@ async function selectPublishedBlogs(locale: string, slug?: string) {
 export async function listPublishedBlogs(locale: string, tag?: string) {
   const blogs = await selectPublishedBlogs(locale);
 
-  return tag ? blogs.filter((blog) => blog.tags.some(({ slug }) => slug === tag)) : blogs;
+  return tag
+    ? blogs.filter((blog) => blog.tags.some(({ slug }) => slug === tag))
+    : blogs;
 }
 
 export async function getPublishedBlog(locale: string, slug: string) {
   const [blog] = await selectPublishedBlogs(locale, slug);
   return blog ?? null;
+}
+
+export async function searchPublished(
+  locale: string,
+  query: string,
+  kind?: SearchableContentKind,
+  cursor = 0,
+): Promise<PublishedSearchResult[]> {
+  const { data, error } = await createPublicClient().rpc(
+    "search_published_content",
+    {
+      search_cursor: cursor,
+      search_kind: kind ?? null,
+      search_locale: locale,
+      search_query: query,
+    },
+  );
+
+  if (error) {
+    throw new Error(`无法搜索已发布内容：${error.message}`);
+  }
+
+  return (data as SearchResultRow[]).map((result) => ({
+    kind: result.kind,
+    locale: result.locale,
+    publishedAt: result.published_at,
+    slug: result.slug,
+    summary: result.summary,
+    tags: result.tags,
+    title: result.title,
+  }));
 }

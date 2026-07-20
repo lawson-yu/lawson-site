@@ -173,7 +173,7 @@ content_items 1 ── 0..1 import_sources
   → MarkdownDocument.render → 404 或可访问的文章页/JSON-LD/metadata
 ```
 
-搜索使用 `content_variants` 的 stored `tsvector` + GIN 索引，组合标题(A)、摘要(B)、正文(C)和 confirmed 标签(B)，中文采用数据库可用的 text-search configuration；迁移前验证该配置的分词结果。`search_published_content(locale, query, kind, cursor)` 是唯一暴露给 `ContentCatalog.searchPublished` 的 SQL function：它固定 `state = 'published'`、过滤 kind、按 rank/发布时间排序并限页。Supabase 推荐以生成 `tsvector`、GIN 索引及 RPC 承载多列高权重搜索。[Full text search](https://supabase.com/docs/guides/database/full-text-search)
+搜索使用 `content_variants` 的 stored `tsvector` + GIN 索引，组合标题(A)、摘要(B)、正文(C)和 confirmed 标签(B)。Postgres `simple` configuration 不提供中文词语切分，因此它仅保存加权结构，不能作为中文检索实现；中文实际匹配使用 Supabase 提供的 `PGroonga` 索引，它支持中文等多语种全文检索。[PGroonga](https://supabase.com/docs/guides/database/extensions/pgroonga) 的 `pgroonga_score(tableoid, ctid)` 作为相关性排序，随后以发布时间与 id 稳定打破平局。`search_published_content(locale, query, kind, cursor)` 是唯一暴露给 `ContentCatalog.searchPublished` 的 SQL function：它固定 `state = 'published'`、过滤 kind、只索引已发布 variant 和 confirmed 标签，并限页。`scripts/verify-published-search.mjs` 使用“技术站”查询命中包含该词的中文博客，作为可复现运行时证据；初版 migration `20260720160055` 已于 2026-07-21 应用，随后由 corrective migration 修正为仅维护 published 搜索内容与 partial index。Supabase 推荐以生成 `tsvector`、GIN 索引及 RPC 承载多列高权重搜索。[Full text search](https://supabase.com/docs/guides/database/full-text-search)
 
 ## fixture 到真实数据的替换
 

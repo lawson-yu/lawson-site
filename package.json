@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "verify": "bash scripts/verify.sh",
     "test:e2e": "playwright test",
-    "test:rls": "node --env-file=.env.local scripts/verify-public-blog-rls.mjs && node --env-file=.env.local scripts/verify-media-storage-rls.mjs",
+    "test:rls": "node --env-file=.env.local scripts/verify-public-blog-rls.mjs && node --env-file=.env.local scripts/verify-media-storage-rls.mjs && node --env-file=.env.local scripts/verify-published-search.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"
