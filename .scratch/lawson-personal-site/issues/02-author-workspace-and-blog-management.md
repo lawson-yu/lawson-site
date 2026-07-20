@@ -4,7 +4,7 @@
 
 Blocked by: 01 — 发布博客的公开阅读与最小内容底座.
 
-Status: ready-for-agent
+Status: resolved
 
 - [ ] 唯一作者身份以稳定 GitHub provider ID 授权；未登录和其他身份无法进入工作区或进行写入。
 - [ ] 作者可完成博客草稿到发布、撤回的完整流程，且原公开内容的可见性始终正确。
