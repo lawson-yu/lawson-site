@@ -22,6 +22,7 @@ assert.ifError(variantError);
 assert.ifError(tagError);
 assert.deepEqual(variants, [
   { slug: "agent-workflows", state: "published" },
+  { slug: "langchain", state: "published" },
   { slug: "personal-site-foundation", state: "published" },
 ]);
 assert.deepEqual(tags, [

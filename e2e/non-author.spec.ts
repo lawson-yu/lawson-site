@@ -17,4 +17,12 @@ test.describe("已登录非作者", () => {
     await expect(page).toHaveURL(/\/auth\/login\?error=unauthorized$/);
     await expect(page.getByRole("heading", { name: "作者登录" })).toBeVisible();
   });
+
+  test("不能写入精选项目", async ({ page }) => {
+    const response = await page.request.post("/api/author/curated", {
+      data: {},
+    });
+
+    expect(response.status()).toBe(401);
+  });
 });
