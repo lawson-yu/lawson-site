@@ -8,8 +8,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Lawson Site",
-  description: "Minimal Next.js skeleton",
+  title: "LAWSON — AI 与工程实践",
+  description: "关于 AI、工程实践与可持续维护的技术系统。",
 };
 
 const geistSans = Geist({
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body className={`${geistSans.className} antialiased`}>{children}</body>
     </html>
   );

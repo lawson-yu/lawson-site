@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-accent: #ff3b9d;
+  --color-action: #ffd400;
+  --color-brand: #7896ff;
+  --color-canvas: #080b0c;
+  --color-ink: #f4f6fa;
+  --color-line: #334252;
+  --color-muted: #a7b0bf;
+  --color-surface: #101b25;
+  --color-surface-raised: #162534;
+  --container-reading: 720px;
+  --container-site: 1200px;
+  --tracking-eyebrow: 0.16em;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -7,7 +22,7 @@
 
   body {
     margin: 0;
-    background: #fff;
-    color: #000;
+    background: var(--color-canvas);
+    color: var(--color-ink);
   }
 }
