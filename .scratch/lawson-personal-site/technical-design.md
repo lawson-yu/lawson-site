@@ -146,7 +146,7 @@ content_items 1 ── 0..1 import_sources
        → /author；否则登出并显示无权访问
 ```
 
-`AUTHOR_GITHUB_ID` 是部署环境变量，不记录在仓库或客户端。callback 首次允许该 ID 建立 `author_profiles`，其余 GitHub 身份不创建作者权限。每一个后台 Route Handler 都重新调用 `requireAuthor`，不能只相信 proxy 重定向；Client Component 不直接写 Supabase，也不使用 Server Action 绕过 HTTP seam。
+`AUTHOR_GITHUB_ID` 是部署环境变量，不记录在仓库或客户端。首次上线时，作者先在 Supabase Dashboard 为该 GitHub OAuth user ID 建立唯一 `author_profiles` 行；callback 只接受同时匹配该环境变量与该 profile 的身份，其他 GitHub 身份不创建作者权限。这样 callback 不需要 `service_role`，该密钥仍只属于受限导入执行器。每一个后台 Route Handler 都重新调用 `requireAuthor`，不能只相信 proxy 重定向；Client Component 不直接写 Supabase，也不使用 Server Action 绕过 HTTP seam。
 
 ### 自动导入
 
