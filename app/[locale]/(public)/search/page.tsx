@@ -23,6 +23,7 @@ const kindLabels: Record<SearchableContentKind, string> = {
 };
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/zh-CN/search" },
   robots: { follow: true, index: false },
   title: "搜索 | LAWSON",
 };

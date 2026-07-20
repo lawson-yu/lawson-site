@@ -4,8 +4,13 @@
 
 Blocked by: 01 — 发布博客的公开阅读与最小内容底座; 03 — 个人项目的管理与公开展示; 04 — 精选项目资料库的管理与公开展示.
 
-Status: ready-for-agent
+Status: resolved
 
-- [ ] 首页遵循已确认的编辑内容流，展示真实已发布内容并提供清晰公开导航与联系入口。
-- [ ] 无 locale 的公开入口重定向至首发 locale；RSS、sitemap、canonical URL 与公开页面 metadata 正确。
-- [ ] 目标宽度、键盘焦点、减少动态效果和无横向滚动通过浏览器与视觉验收；本 ticket 不阻塞已交付博客 URL 的直接访问。
+- [x] 首页遵循已确认的编辑内容流，展示真实已发布内容并提供清晰公开导航与联系入口。
+- [x] 无 locale 的公开入口重定向至首发 locale；RSS、sitemap、canonical URL 与公开页面 metadata 正确。
+- [x] 目标宽度、键盘焦点、减少动态效果和无横向滚动通过浏览器与视觉验收；本 ticket 不阻塞已交付博客 URL 的直接访问。
+
+## 评论
+
+- 已交付编辑内容流首页、关于/联系/公开导航、301 locale 入口、RSS、绝对 sitemap 与所有公开列表 canonical/noindex metadata。
+- 验证：公开浏览器 e2e、`pnpm verify`、`pnpm build`、`git diff --check`，最终 review 无阻断项。

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -9,6 +10,12 @@ import { listPublishedCuratedProjects } from "@/lib/content/curated";
 type Props = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ topic?: string; week?: string }>;
+};
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/zh-CN/curated" },
+  description: "LAWSON 按主题与收录周整理的 GitHub 精选项目。",
+  title: "精选项目 | LAWSON",
 };
 
 function CuratedFallback() {

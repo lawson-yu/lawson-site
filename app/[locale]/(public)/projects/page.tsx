@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element -- Cover URLs become managed media in Ticket 05. */
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -9,6 +10,12 @@ import { listPublishedProjects } from "@/lib/content/projects";
 
 type ProjectsPageProps = {
   params: Promise<{ locale: string }>;
+};
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/zh-CN/projects" },
+  description: "LAWSON 的真实工程项目、技术选择与可验证成果。",
+  title: "个人项目 | LAWSON",
 };
 
 function ProjectsFallback() {

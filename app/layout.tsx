@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
+
+import { siteUrl } from "@/lib/site-url";
+
 import "./globals.css";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl),
+  metadataBase: siteUrl,
   title: "LAWSON — AI 与工程实践",
   description: "关于 AI、工程实践与可持续维护的技术系统。",
 };

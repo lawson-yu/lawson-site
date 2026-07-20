@@ -2,7 +2,23 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { hasEnvVars } from "../utils";
 
+const localeRedirects = new Map([
+  ["/", "/zh-CN"],
+  ["/about", "/zh-CN/about"],
+  ["/blog", "/zh-CN/blog"],
+  ["/curated", "/zh-CN/curated"],
+  ["/projects", "/zh-CN/projects"],
+  ["/search", "/zh-CN/search"],
+]);
+
 export async function updateSession(request: NextRequest) {
+  const localePath = localeRedirects.get(request.nextUrl.pathname);
+  if (localePath) {
+    const url = request.nextUrl.clone();
+    url.pathname = localePath;
+    return NextResponse.redirect(url, 301);
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });

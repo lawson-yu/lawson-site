@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
-import { BlogHeader } from "./_components/blog-header";
 import { listPublishedBlogs, supportedLocale } from "@/lib/content/catalog";
 
 type BlogListPageProps = {
@@ -13,6 +12,7 @@ type BlogListPageProps = {
 };
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/zh-CN/blog" },
   description: "LAWSON 的工程实践、教程与 AI 内容。",
   title: "博客 | LAWSON",
 };
@@ -33,7 +33,6 @@ async function BlogListContent({ params, searchParams }: BlogListPageProps) {
 
   return (
     <main className="bg-canvas text-ink min-h-screen" lang={locale}>
-      <BlogHeader locale={locale} />
       <section className="max-w-site mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <p className="tracking-eyebrow text-accent text-sm font-bold">
           FIELD NOTES
