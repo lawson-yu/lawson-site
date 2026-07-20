@@ -54,7 +54,6 @@ test.describe("作者个人项目生命周期", () => {
     );
     await page.getByRole("button", { name: "创建编辑草稿" }).click();
     await editNavigation;
-    const editId = page.url().split("/").at(-1)!;
     await page.getByRole("button", { name: "发布" }).click();
     await expect(
       page.getByRole("button", { name: "撤回为草稿" }),

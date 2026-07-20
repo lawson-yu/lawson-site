@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- Cover URLs become managed media in Ticket 05. */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
