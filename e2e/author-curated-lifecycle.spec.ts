@@ -39,12 +39,21 @@ test.describe("作者精选项目生命周期", () => {
     await page.getByRole("button", { name: "保存草稿" }).click();
     expect((await created).status()).toBe(201);
     await expect(page).toHaveURL(/\/author\/curated\/[0-9a-f-]{36}$/);
+    const id = page.url().split("/").at(-1)!;
     await page.getByRole("button", { name: "发布" }).click();
-    await page.goto(`/zh-CN/curated/${slug}`);
-    await expect(page.getByRole("heading", { name: title })).toBeVisible();
-    await page.goBack();
+    await expect(
+      page.getByRole("button", { name: "撤回为草稿" }),
+    ).toBeVisible();
+    await page.goto(`/zh-CN/curated/${slug}`, { waitUntil: "networkidle" });
+    await expect(page.getByRole("heading", { name: title })).toBeVisible({
+      timeout: 15_000,
+    });
+    await page.goto(`/author/curated/${id}`);
     await page.getByRole("button", { name: "撤回为草稿" }).click();
-    await page.goto(`/zh-CN/curated/${slug}`);
-    await expect(page.getByRole("heading", { name: title })).not.toBeVisible();
+    await expect(page.getByRole("button", { name: "发布" })).toBeVisible();
+    await page.goto(`/zh-CN/curated/${slug}`, { waitUntil: "networkidle" });
+    await expect(page.getByRole("heading", { name: title })).toHaveCount(0, {
+      timeout: 15_000,
+    });
   });
 });

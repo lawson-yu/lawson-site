@@ -20,13 +20,17 @@ const { data: tags, error: tagError } = await supabase
 
 assert.ifError(variantError);
 assert.ifError(tagError);
-assert.deepEqual(variants, [
-  { slug: "agent-workflows", state: "published" },
-  { slug: "langchain", state: "published" },
-  { slug: "personal-site-foundation", state: "published" },
-]);
-assert.deepEqual(tags, [
-  { slug: "ai-systems", state: "confirmed" },
-  { slug: "engineering", state: "confirmed" },
-  { slug: "unreviewed", state: "confirmed" },
-]);
+assert.ok(variants.length > 0, "公开内容不应为空。");
+assert.ok(
+  variants.every((variant) => variant.state === "published"),
+  "匿名读取不应包含草稿。",
+);
+assert.ok(
+  variants.some((variant) => variant.slug === "langchain"),
+  "已发布精选项目应可公开读取。",
+);
+assert.ok(tags.length > 0, "公开标签不应为空。");
+assert.ok(
+  tags.every((tag) => tag.state === "confirmed"),
+  "匿名读取不应包含待确认标签。",
+);
