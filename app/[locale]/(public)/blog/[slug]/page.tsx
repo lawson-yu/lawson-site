@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { Suspense } from "react";
 
 import { BlogHeader } from "../_components/blog-header";
@@ -11,9 +12,13 @@ type BlogDetailPageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
-export async function generateMetadata({ params }: BlogDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: BlogDetailPageProps): Promise<Metadata> {
+  await connection();
   const { locale, slug } = await params;
-  const blog = locale === supportedLocale ? await getPublishedBlog(locale, slug) : null;
+  const blog =
+    locale === supportedLocale ? await getPublishedBlog(locale, slug) : null;
 
   if (!blog) {
     return { title: "文章不存在 | LAWSON" };
@@ -32,10 +37,11 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
 }
 
 function BlogDetailFallback() {
-  return <main className="min-h-screen bg-canvas" />;
+  return <main className="bg-canvas min-h-screen" />;
 }
 
 async function BlogDetailContent({ params }: BlogDetailPageProps) {
+  await connection();
   const { locale, slug } = await params;
 
   if (locale !== supportedLocale) {
@@ -60,25 +66,29 @@ async function BlogDetailContent({ params }: BlogDetailPageProps) {
   }).replace(/</g, "\\u003c");
 
   return (
-    <main className="min-h-screen bg-canvas text-ink" lang={locale}>
+    <main className="bg-canvas text-ink min-h-screen" lang={locale}>
       <BlogHeader locale={locale} />
-      <article className="mx-auto max-w-reading px-4 py-16 sm:px-6 sm:py-24">
-        <p className="text-sm font-bold tracking-eyebrow text-accent">ENGINEERING NOTE</p>
-        <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-6xl">
+      <article className="max-w-reading mx-auto px-4 py-16 sm:px-6 sm:py-24">
+        <p className="tracking-eyebrow text-accent text-sm font-bold">
+          ENGINEERING NOTE
+        </p>
+        <h1 className="mt-4 text-4xl leading-tight font-extrabold tracking-tight sm:text-6xl">
           {blog.title}
         </h1>
-        <p className="mt-6 text-xl leading-8 text-muted">{blog.summary}</p>
-        <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-muted">
+        <p className="text-muted mt-6 text-xl leading-8">{blog.summary}</p>
+        <div className="text-muted mt-8 flex flex-wrap items-center gap-3 text-sm">
           <span>LAWSON</span>
           <span aria-hidden="true">·</span>
           <time dateTime={blog.publishedAt}>
-            {new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(new Date(blog.publishedAt))}
+            {new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(
+              new Date(blog.publishedAt),
+            )}
           </time>
         </div>
         <div className="mt-6 flex flex-wrap gap-2">
           {blog.tags.map((tag) => (
             <Link
-              className="rounded-full border border-line px-3 py-1 text-xs font-semibold text-accent"
+              className="border-line text-accent rounded-full border px-3 py-1 text-xs font-semibold"
               href={`/${locale}/blog?tag=${encodeURIComponent(tag.slug)}`}
               key={tag.slug}
             >
@@ -86,11 +96,14 @@ async function BlogDetailContent({ params }: BlogDetailPageProps) {
             </Link>
           ))}
         </div>
-        <div className="mt-12 border-t border-line pt-2">
+        <div className="border-line mt-12 border-t pt-2">
           <MarkdownContent markdown={blog.bodyMarkdown} />
         </div>
       </article>
-      <script dangerouslySetInnerHTML={{ __html: jsonLd }} type="application/ld+json" />
+      <script
+        dangerouslySetInnerHTML={{ __html: jsonLd }}
+        type="application/ld+json"
+      />
     </main>
   );
 }

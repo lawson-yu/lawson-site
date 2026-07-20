@@ -30,6 +30,7 @@ export function BlogLifecycleActions({
 
     if (action === "edit") {
       router.push(`/author/blog/${(result as { id: string }).id}`);
+      return;
     }
     router.refresh();
   }

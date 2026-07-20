@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 
 import { TagConfirmButton } from "./tag-confirm-button";
 import { getAuthorIdentity } from "@/lib/author/identity";
 import { listWorkspaceBlogs, listWorkspaceTags } from "@/lib/content/workspace";
 
 export default async function AuthorWorkspacePage() {
+  await connection();
   const author = await getAuthorIdentity();
   if (!author) {
     redirect("/auth/login?error=unauthorized");

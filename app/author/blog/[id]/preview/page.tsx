@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { connection } from "next/server";
 
 import { MarkdownContent } from "@/app/[locale]/(public)/blog/[slug]/markdown-content";
 import { getAuthorIdentity } from "@/lib/author/identity";
@@ -9,6 +10,7 @@ export default async function BlogPreviewPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await connection();
   const author = await getAuthorIdentity();
   if (!author) {
     redirect("/auth/login?error=unauthorized");

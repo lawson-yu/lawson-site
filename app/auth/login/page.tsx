@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function LoginPage() {
   return (
     <main className="bg-canvas text-ink grid min-h-screen place-items-center px-4">
@@ -11,12 +9,14 @@ export default function LoginPage() {
         <p className="text-muted mt-4 leading-7">
           仅 LAWSON 的 GitHub OAuth 身份可以进入内容工作区。
         </p>
-        <Link
+        {/* OAuth 必须由浏览器直接导航，避免客户端 RSC 请求跨域授权地址。 */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a
           className="bg-action text-canvas mt-8 inline-flex min-h-11 items-center rounded-lg px-4 py-3 font-bold"
           href="/auth/login/github"
         >
           使用 GitHub 登录
-        </Link>
+        </a>
       </section>
     </main>
   );

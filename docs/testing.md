@@ -16,6 +16,24 @@
 
 首次运行 e2e 请执行 `pnpm exec playwright install chromium`。测试录像、trace 和截图写入 gitignored 的 `evidence/` 与 `test-results/`。
 
+需要验证已登录非作者的访问控制时，先生成本地会话文件：
+
+```bash
+pnpm exec playwright codegen \
+  --save-storage=evidence/auth/non-author.json \
+  http://localhost:3000/auth/login
+```
+
+登录后关闭 codegen 窗口，再执行 `pnpm test:e2e`。该会话文件不会提交；缺失时对应测试自动跳过。
+
+作者博客生命周期测试还需要主作者账号的本地会话文件：
+
+```bash
+pnpm exec playwright codegen \
+  --save-storage=evidence/auth/author.json \
+  http://localhost:3000/auth/login
+```
+
 ## CI
 
 GitHub Actions 会运行 lint、类型检查、生产构建，并启动构建产物后执行同一套 e2e smoke test。新增用户可见功能时，在 `e2e/` 中增加一个稳定的真实用户路径测试。

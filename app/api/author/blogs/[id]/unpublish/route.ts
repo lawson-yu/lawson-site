@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { parseContentId } from "@/lib/author/blog-input";
 import { requireAuthor } from "@/lib/author/identity";
 import { unpublishBlog } from "@/lib/content/workspace";
-import { requestFailure } from "../../../response";
+import { revalidatePublicBlogs, requestFailure } from "../../../response";
 
 export async function POST(
   _: Request,
@@ -19,6 +19,7 @@ export async function POST(
     const { id: rawId } = await params;
     const id = parseContentId(rawId);
     await unpublishBlog(id);
+    revalidatePublicBlogs();
     return NextResponse.json({ id });
   } catch (error) {
     return requestFailure(error);

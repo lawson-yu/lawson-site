@@ -27,4 +27,5 @@ assert.deepEqual(variants, [
 assert.deepEqual(tags, [
   { slug: "ai-systems", state: "confirmed" },
   { slug: "engineering", state: "confirmed" },
+  { slug: "unreviewed", state: "confirmed" },
 ]);

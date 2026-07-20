@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { connection } from "next/server";
 
 import { BlogForm } from "../../blog-form";
 import { BlogLifecycleActions } from "../../blog-lifecycle-actions";
@@ -11,6 +12,7 @@ export default async function EditBlogPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await connection();
   const author = await getAuthorIdentity();
   if (!author) {
     redirect("/auth/login?error=unauthorized");

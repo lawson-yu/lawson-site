@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 
 import { BlogForm } from "../../blog-form";
 import { getAuthorIdentity } from "@/lib/author/identity";
 import { listWorkspaceTags } from "@/lib/content/workspace";
 
 export default async function NewBlogPage() {
+  await connection();
   if (!(await getAuthorIdentity())) {
     redirect("/auth/login?error=unauthorized");
   }
