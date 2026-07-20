@@ -38,41 +38,29 @@ test.describe("作者个人项目生命周期", () => {
     );
     await page.getByRole("button", { name: "保存草稿" }).click();
     expect((await created).status()).toBe(201);
+    await expect(page).toHaveURL(/\/author\/project\/[0-9a-f-]{36}$/);
     const firstId = page.url().split("/").at(-1)!;
 
-    const published = page.waitForResponse(
-      (response) =>
-        new URL(response.url()).pathname ===
-        `/api/author/projects/${firstId}/publish`,
-    );
     await page.getByRole("button", { name: "发布" }).click();
-    expect((await published).status()).toBe(200);
+    await expect(
+      page.getByRole("button", { name: "撤回为草稿" }),
+    ).toBeVisible();
     await page.goto(`/zh-CN/projects/${slug}`);
     await expect(page.getByRole("heading", { name: title })).toBeVisible();
 
     await page.goto(`/author/project/${firstId}`);
-    const edit = page.waitForResponse(
-      (response) =>
-        new URL(response.url()).pathname ===
-        `/api/author/projects/${firstId}/edit`,
+    const editNavigation = page.waitForURL(
+      (url) => url.pathname !== `/author/project/${firstId}`,
     );
     await page.getByRole("button", { name: "创建编辑草稿" }).click();
-    const editId = ((await (await edit).json()) as { id: string }).id;
-    await page.goto(`/author/project/${editId}`);
-    const republished = page.waitForResponse(
-      (response) =>
-        new URL(response.url()).pathname ===
-        `/api/author/projects/${editId}/publish`,
-    );
+    await editNavigation;
+    const editId = page.url().split("/").at(-1)!;
     await page.getByRole("button", { name: "发布" }).click();
-    expect((await republished).status()).toBe(200);
-    const unpublished = page.waitForResponse(
-      (response) =>
-        new URL(response.url()).pathname ===
-        `/api/author/projects/${editId}/unpublish`,
-    );
+    await expect(
+      page.getByRole("button", { name: "撤回为草稿" }),
+    ).toBeVisible();
     await page.getByRole("button", { name: "撤回为草稿" }).click();
-    expect((await unpublished).status()).toBe(200);
+    await expect(page.getByRole("button", { name: "发布" })).toBeVisible();
     await page.goto(`/zh-CN/projects/${slug}`);
     await expect(page.getByRole("heading", { name: title })).not.toBeVisible();
   });
