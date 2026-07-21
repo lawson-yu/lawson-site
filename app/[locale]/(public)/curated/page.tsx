@@ -34,7 +34,7 @@ async function CuratedContent({ params, searchParams }: Props) {
       projects.flatMap((project) =>
         project.tags.map((tag) => [tag.slug, tag.label]),
       ),
-    ).values(),
+    ).entries(),
   ];
   const filteredProjects = projects.filter(
     (project) =>

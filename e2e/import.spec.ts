@@ -206,14 +206,14 @@ test.describe("受限导入契约", () => {
     }
   });
 
-  test.skip(
-    !existsSync(authorStorageState),
-    "需要未提交的作者登录态验证已发布内容保护。",
-  );
   test("导入已发布内容只创建编辑草稿，不直接改变公开版本", async ({
     browser,
     page,
   }) => {
+    test.skip(
+      !existsSync(authorStorageState),
+      "需要未提交的作者登录态验证已发布内容保护。",
+    );
     const author = await browser.newContext({
       storageState: authorStorageState,
     });

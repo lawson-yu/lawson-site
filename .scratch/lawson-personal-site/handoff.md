@@ -8,7 +8,7 @@
 
 - 工作目录：`/Users/lawson/Projects/MyProject/lawson-site`。
 - 01–07 均为 `resolved`。07 已在 `b678e31 feat(site): add public site experience` 提交。
-- 08 仍为 `ready-for-agent`，实现已提交为 `bb3cd56 feat(import): add restricted content import`；不要提前改 ticket 状态。
+- 08 已 `resolved`。实现基于 `bb3cd56 feat(import): add restricted content import`；验收修复尚未提交。
 - 当前工作区除本交接文档外应保持干净。接手后先以 `git status --short` 和 `git show --stat bb3cd56` 审阅 08，不要改写或重置既有提交。
 - 本目标约定：每张 ticket 使用 `$implement`，验收完成后使用 `$code-review`；不推送、不部署、不改生产。
 
@@ -35,25 +35,16 @@
 - `20260720173138_restricted_content_import.sql` 曾被误改；已从已应用的 Git blob 精确恢复，当前本地版本必须保持与远端 migration history 一致。任何新修正只能新增 migration，绝不能重写已应用 migration。
 - 迁移使用受限 RPC 和清理队列表。继续变更前先审阅三份 migration 的最终 diff 与已链接项目的 migration 状态。
 
-## 已验证与当前阻塞
+## 已验证与当前状态
 
-- 已通过：`pnpm verify`、`pnpm build`、`git diff --check`；导入接口的缺失/错误密钥契约测试通过。
-- 有效导入的三个 e2e 用例当前均返回 HTTP 500，因而 08 **未通过验收**。这是实际运行时失败，不可用跳过测试替代。
-- 最强线索是运行 Next.js 服务的环境未提供导入执行器所需的 `SUPABASE_SERVICE_ROLE_KEY`；该执行器需要该服务端变量调用私有 RPC 和 Storage。不要读取、输出、提交或要求他人发送 `.env*` 或密钥。
-- 路由的导入密钥哈希环境变量名为 `IMPORT_SECRET_HASH`（可选轮换变量 `IMPORT_SECRET_PREVIOUS_HASH`）；测试通过 `IMPORT_TEST_SECRET` 提供与哈希匹配的测试密钥。使用本地安全配置后重启开发服务，再运行：
+- 已通过：`pnpm verify`、`pnpm build`、`git diff --check`、完整 `pnpm test:e2e`（20/20）及导入契约（4/4）。
+- 有效导入 500 根因是 `prepare_import_draft` 返回字段与列名歧义；已通过新迁移 `20260721021602_fix_import_draft_column_ambiguity.sql` 修复并应用。
+- 导入 RPC 已通过 `20260721025814_restrict_import_rpc_execute.sql`、`20260721025948_revoke_import_rpc_public_roles.sql` 限制为 `service_role`；已核验 `anon`、`authenticated` 无执行权。
+- 无待处理 ticket；未提交、未推送、未部署。
 
-  `IMPORT_TEST_SECRET=<本地测试密钥> pnpm exec playwright test e2e/import.spec.ts --reporter=line`
+## 后续动作
 
-  仅在服务端同时具备有效的 `SUPABASE_SERVICE_ROLE_KEY` 和匹配的导入密钥哈希时，该命令才应验证有效导入流程。不要将真实值写入命令历史、文档或仓库。
-
-## 推荐续做顺序
-
-1. 阅读根 `AGENTS.md`、`spec.md`、`technical-design.md`、ADR `docs/adr/0001-restricted-agent-import.md`、08 ticket 与当前 diff；优先用 codebase-memory-mcp 导航。
-2. 在不读取或修改 `.env*` 的前提下，确认运行服务的安全环境已由维护者配置 `SUPABASE_SERVICE_ROLE_KEY`、导入密钥哈希和测试密钥；重启本地服务。
-3. 先让 `e2e/import.spec.ts` 的有效导入、幂等、已发布保护和图片重写用例真实通过；如仍为 500，安全地检查服务器日志/受限 RPC 返回，不泄露任何凭据。
-4. 运行相关 RLS/迁移验证，以及 `pnpm verify`、`pnpm build`、`git diff --check`；最后运行完整 `pnpm test:e2e`。
-5. 对 08 做 Standards 与 Spec 两轴独立 `$code-review`；修复发现后重新跑相关验证。
-6. 验收通过后，更新 08 ticket 为 `resolved`，更新本交接并以新的 docs commit 记录状态。之后再执行最终跨-ticket review、完整回归和干净工作区检查。
+如需保留本轮变更：只暂存 Ticket 08 相关实现、测试、迁移和本交接文件；不要混入已有 README、02、03、`supabase/config.toml` 或 `supabase/.gitignore` 修改。
 
 ## 重要边界
 

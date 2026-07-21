@@ -25,9 +25,12 @@ async function removeAndAcknowledge(
 
 export async function importContent(input: ImportPackage) {
   const supabase = createImportExecutorClient();
-  const { data: pendingCleanup } = await supabase.rpc(
-    "pending_import_cleanup_paths",
-  );
+  const { data: pendingCleanup, error: pendingCleanupError } =
+    await supabase.rpc("pending_import_cleanup_paths");
+  if (pendingCleanupError)
+    throw new ImportExecutionError(
+      `pending_import_cleanup_paths:${pendingCleanupError.code ?? "unknown"}`,
+    );
   await removeAndAcknowledge(
     supabase,
     (pendingCleanup as string[] | null) ?? [],
@@ -45,8 +48,11 @@ export async function importContent(input: ImportPackage) {
     import_title: input.title,
   });
   const prepared = (data as PreparedImport[] | null)?.[0];
+  if (error)
+    throw new ImportExecutionError(
+      `prepare_import_draft:${error.code ?? "unknown"}`,
+    );
   if (
-    error ||
     !prepared ||
     !prepared.draft_variant_id ||
     (prepared.result !== "unchanged" && !prepared.import_batch_id)

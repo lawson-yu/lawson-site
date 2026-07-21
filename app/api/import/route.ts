@@ -17,9 +17,9 @@ export async function POST(request: Request) {
   const contentLength = Number(request.headers.get("content-length"));
   if (Number.isFinite(contentLength) && contentLength > maxPackageBytes)
     return NextResponse.json({ error: "导入包大小超过限制" }, { status: 413 });
-  if (isImportRateLimited(request))
-    return NextResponse.json({ error: "请求过于频繁" }, { status: 429 });
   if (!hasValidImportSecret(request.headers.get("authorization"))) {
+    if (isImportRateLimited(request))
+      return NextResponse.json({ error: "请求过于频繁" }, { status: 429 });
     return NextResponse.json({ error: "未授权" }, { status: 401 });
   }
   try {

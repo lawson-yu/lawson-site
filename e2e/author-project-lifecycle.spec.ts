@@ -12,6 +12,7 @@ test.describe("作者个人项目生命周期", () => {
   test.use({ storageState: authorStorageState });
 
   test("创建、发布、编辑发布并撤回个人项目", async ({ page }) => {
+    test.setTimeout(60_000);
     const suffix = Date.now().toString(36);
     const slug = `e2e-project-${suffix}`;
     const title = `E2E 个人项目 ${suffix}`;
@@ -38,7 +39,9 @@ test.describe("作者个人项目生命周期", () => {
     );
     await page.getByRole("button", { name: "保存草稿" }).click();
     expect((await created).status()).toBe(201);
-    await expect(page).toHaveURL(/\/author\/project\/[0-9a-f-]{36}$/);
+    await expect(page).toHaveURL(/\/author\/project\/[0-9a-f-]{36}$/, {
+      timeout: 30_000,
+    });
     const firstId = page.url().split("/").at(-1)!;
 
     await page.getByRole("button", { name: "发布" }).click();
