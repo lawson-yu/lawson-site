@@ -163,14 +163,23 @@ function RiverRipples() {
   return (
     <div
       aria-label="浅色河流"
-      className="absolute right-[-18%] bottom-[-4%] h-[34%] w-[88%] rotate-[-7deg] rounded-[50%] bg-[radial-gradient(ellipse_at_50%_80%,rgba(220,238,247,0.72),rgba(148,184,207,0.22)_42%,transparent_72%)] blur-[1px] sm:right-[-8%] sm:w-[72%] lg:right-[-2%] lg:bottom-[-8%] lg:h-[42%] lg:w-[61%]"
+      className="absolute bottom-[-4%] left-1/2 z-20 aspect-[1304/293] w-[min(92vw,420px)] -translate-x-1/2 transition-transform duration-200 ease-out motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:right-[-8%] sm:left-auto sm:w-[min(72vw,600px)] sm:translate-x-0 lg:right-[-6%] lg:bottom-[-16%] lg:w-[min(56vw,744px)] lg:hover:-translate-y-1"
       data-ripple-state={rippleState}
       data-river-surface
       role="img"
     >
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none object-contain"
+        fill
+        sizes="(min-width: 1024px) 56vw, (min-width: 640px) 72vw, 92vw"
+        src="/images/hero-river-transparent-v3.png"
+        unoptimized
+      />
       <canvas
         aria-hidden="true"
-        className="h-full w-full cursor-crosshair"
+        className="relative z-10 h-full w-full cursor-crosshair"
         onPointerMove={addRipple}
         ref={canvasRef}
       />
@@ -182,22 +191,22 @@ export function RiverHero() {
   return (
     <section
       aria-labelledby="river-hero-title"
-      className="bg-canvas relative isolate min-h-[70svh] overflow-hidden lg:min-h-[calc(100svh-4rem)]"
+      className="bg-canvas relative isolate h-[400px] overflow-hidden lg:h-[530px]"
       data-home-hero
     >
       <Image
         alt="夜色山谷中的河流"
-        className="object-cover object-[58%_center]"
+        className="object-cover object-center"
         fill
         priority
         sizes="100vw"
-        src="/images/river-hero-background.png"
+        src="/images/river-hero-background-v2.png"
         unoptimized
       />
       <div className="from-canvas via-canvas/72 absolute inset-0 bg-linear-to-r to-[#08121d]/20" />
       <div className="from-canvas via-canvas/35 absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t to-transparent" />
 
-      <div className="max-w-site relative mx-auto flex min-h-[70svh] items-start px-4 pt-20 sm:px-6 sm:pt-28 lg:min-h-[calc(100svh-4rem)] lg:px-8 lg:pt-36">
+      <div className="max-w-site relative mx-auto flex h-full items-start px-4 pt-20 sm:px-6 sm:pt-28 lg:px-8 lg:pt-36">
         <h1
           aria-label="LAWSON — AI 与工程实践"
           className="text-ink max-w-sm text-4xl leading-[0.9] font-black tracking-[-0.06em] sm:text-6xl lg:text-7xl"
@@ -211,14 +220,14 @@ export function RiverHero() {
 
         <RiverRipples />
         <Image
-          alt="LAWSON 的原创 3D 人物形象"
-          className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-auto w-[min(84vw,520px)] -translate-x-1/2 object-contain sm:right-[4%] sm:left-auto sm:w-[min(52vw,520px)] sm:translate-x-0 lg:right-[6%] lg:w-[min(38vw,520px)]"
-          height={1449}
+          alt="LAWSON 的原创圆润潮玩 3D 人物形象"
+          className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-auto w-[min(68vw,250px)] -translate-x-1/2 object-contain sm:right-[6%] sm:left-auto sm:w-[min(42vw,280px)] sm:translate-x-0 lg:right-[9%] lg:w-[min(28vw,310px)]"
+          height={1402}
           priority
-          sizes="(min-width: 1024px) 38vw, (min-width: 640px) 52vw, 84vw"
-          src="/images/river-hero-character.png"
+          sizes="(min-width: 1024px) 28vw, (min-width: 640px) 42vw, 68vw"
+          src="/images/hero-character-transparent-v2.png"
           unoptimized
-          width={1086}
+          width={1122}
         />
       </div>
     </section>
