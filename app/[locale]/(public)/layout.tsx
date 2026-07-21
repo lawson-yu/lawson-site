@@ -17,7 +17,7 @@ export default function PublicLayout({
 }>) {
   return (
     <div className="bg-canvas text-ink min-h-screen overflow-x-hidden">
-      <header className="border-line bg-canvas border-b">
+      <header className="border-line bg-canvas/82 sticky top-0 z-50 border-b backdrop-blur-md">
         <div className="max-w-site mx-auto flex min-h-16 flex-wrap items-center justify-between gap-x-4 px-4 sm:px-6 lg:px-8">
           <Link
             className="focus-visible:ring-brand tracking-eyebrow text-brand focus-visible:ring-offset-canvas min-h-11 py-3 text-sm font-extrabold outline-none focus-visible:ring-2 focus-visible:ring-offset-4"

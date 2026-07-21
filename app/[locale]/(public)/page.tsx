@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
+import { RiverHero } from "@/app/[locale]/(public)/_components/river-hero";
 import { listPublishedBlogs, supportedLocale } from "@/lib/content/catalog";
 import { listPublishedCuratedProjects } from "@/lib/content/curated";
 import { listPublishedProjects } from "@/lib/content/projects";
@@ -51,46 +52,7 @@ async function HomeContent({ params }: HomePageProps) {
 
   return (
     <main lang={locale}>
-      <section className="max-w-site mx-auto grid gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center lg:gap-16 lg:px-8 lg:py-32">
-        <div data-home-hero className="home-hero">
-          <p className="tracking-eyebrow text-accent text-sm font-bold">
-            AI × ENGINEERING NOTES
-          </p>
-          <h1 className="mt-4 max-w-4xl text-5xl leading-none font-extrabold tracking-tight sm:text-7xl">
-            LAWSON — AI 与工程实践
-          </h1>
-          <p className="text-muted mt-6 max-w-2xl text-lg leading-8">
-            从真实项目出发，拆解 AI 工具、工程问题与可持续维护的技术系统。
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              className="bg-action focus-visible:ring-brand text-canvas focus-visible:ring-offset-canvas min-h-11 px-5 py-3 text-sm font-extrabold outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
-              href={`/${locale}/blog`}
-            >
-              阅读最新文章
-            </Link>
-            <Link
-              className="border-line focus-visible:ring-brand hover:bg-surface-raised focus-visible:ring-offset-canvas min-h-11 border px-5 py-3 text-sm font-extrabold outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
-              href={`/${locale}/about`}
-            >
-              认识 LAWSON
-            </Link>
-          </div>
-        </div>
-        <div
-          aria-label="抽象的 AI 与工程插画"
-          className="border-line bg-surface relative min-h-64 overflow-hidden border p-8"
-          role="img"
-        >
-          <div className="border-brand absolute top-8 left-8 size-16 border-4" />
-          <div className="border-accent absolute top-20 right-10 size-24 rounded-full border-4" />
-          <div className="bg-action absolute right-16 bottom-10 h-4 w-40" />
-          <div className="border-brand absolute top-1/2 left-1/4 h-px w-1/2 border-t-2 border-dashed" />
-          <p className="text-muted absolute right-8 bottom-8 font-mono text-xs">
-            BUILD · TEST · LEARN
-          </p>
-        </div>
-      </section>
+      <RiverHero />
 
       <section className="bg-surface border-line border-y">
         <div className="max-w-site mx-auto grid gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-8 lg:py-24">
