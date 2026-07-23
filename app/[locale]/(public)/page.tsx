@@ -54,7 +54,7 @@ async function HomeContent({ params }: HomePageProps) {
     <main lang={locale}>
       <RiverHero />
 
-      <section className="bg-surface border-line border-y">
+      <section className="bg-surface border-line border-b">
         <div className="max-w-site mx-auto grid gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-8 lg:py-24">
           <div>
             <div className="flex items-baseline justify-between gap-4">
@@ -105,12 +105,12 @@ async function HomeContent({ params }: HomePageProps) {
 
       <section className="max-w-site mx-auto grid gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
         <div>
-          <p className="tracking-eyebrow text-accent text-sm font-bold">
+          <p className="tracking-eyebrow text-muted text-sm font-bold">
             FEATURED BUILD
           </p>
           <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl">代表项目</h2>
           {featuredProject ? (
-            <article className="border-line bg-surface mt-8 border p-6">
+            <article className="border-line bg-canvas mt-8 border p-6">
               <h3>
                 <ContentLink
                   href={`/${locale}/projects/${featuredProject.slug}`}
@@ -136,12 +136,12 @@ async function HomeContent({ params }: HomePageProps) {
           </Link>
         </div>
         <div>
-          <p className="tracking-eyebrow text-accent text-sm font-bold">
+          <p className="tracking-eyebrow text-muted text-sm font-bold">
             CURATED REPOSITORIES
           </p>
           <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl">精选项目</h2>
           {curated[0] ? (
-            <article className="border-line bg-surface mt-8 border p-6">
+            <article className="border-line bg-canvas mt-8 border p-6">
               <p className="text-muted text-sm">{curated[0].metadata.week}</p>
               <h3 className="mt-3">
                 <ContentLink href={`/${locale}/curated/${curated[0].slug}`}>
@@ -164,19 +164,19 @@ async function HomeContent({ params }: HomePageProps) {
         </div>
       </section>
 
-      <section className="bg-surface border-line border-y">
+      <section className="bg-inverse text-inverse-ink">
         <div className="max-w-site mx-auto px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-          <p className="tracking-eyebrow text-accent text-sm font-bold">
+          <p className="tracking-eyebrow text-inverse-ink text-sm font-bold">
             CONTACT
           </p>
           <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl">
             一起讨论下一段工程实践
           </h2>
-          <p className="text-muted mt-4 max-w-2xl leading-7">
+          <p className="text-inverse-ink mt-4 max-w-2xl leading-7">
             通过 GitHub、LinkedIn 或邮件联系；也可以订阅 RSS 跟踪后续内容。
           </p>
           <Link
-            className="bg-action focus-visible:ring-brand text-canvas focus-visible:ring-offset-surface mt-8 inline-block min-h-11 px-5 py-3 text-sm font-extrabold outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
+            className="bg-accent text-ink focus-visible:ring-accent focus-visible:ring-offset-inverse mt-8 inline-block min-h-11 rounded-[var(--radius-control)] px-5 py-3 text-sm font-extrabold outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
             href={`/${locale}/about`}
           >
             查看联系入口

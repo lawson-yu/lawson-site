@@ -44,18 +44,21 @@ async function CuratedDetailContent({ params }: Props) {
   }).replace(/</g, "\\u003c");
   return (
     <main className="bg-canvas text-ink min-h-screen" lang={locale}>
-      <article className="max-w-reading mx-auto px-4 py-16 sm:px-6">
-        <Link className="text-muted underline" href={`/${locale}/curated`}>
+      <article className="max-w-reading mx-auto px-4 py-16 sm:px-6 sm:py-24">
+        <Link
+          className="text-muted underline underline-offset-4"
+          href={`/${locale}/curated`}
+        >
           ← 精选项目
         </Link>
-        <p className="tracking-eyebrow text-accent mt-10 text-sm font-bold">
+        <p className="tracking-eyebrow text-accent mt-10 text-xs font-bold">
           {project.metadata.week}
         </p>
-        <h1 className="mt-4 text-4xl font-extrabold sm:text-6xl">
+        <h1 className="mt-4 text-4xl font-medium tracking-tight sm:text-6xl">
           {project.title}
         </h1>
         <p className="text-muted mt-6 text-xl leading-8">{project.summary}</p>
-        <dl className="border-line mt-12 grid gap-8 border-y py-8">
+        <dl className="border-line mt-12 grid gap-8 border-y py-8 sm:grid-cols-2">
           <div>
             <dt className="font-bold">解决的问题</dt>
             <dd className="text-muted mt-2 leading-7">
@@ -79,7 +82,7 @@ async function CuratedDetailContent({ params }: Props) {
             <dd className="mt-3 flex flex-wrap gap-2">
               {project.tags.map((tag) => (
                 <span
-                  className="border-line rounded-full border px-3 py-1 text-sm"
+                  className="border-line rounded-md border px-3 py-1 text-sm"
                   key={tag.id}
                 >
                   {tag.label}
@@ -92,7 +95,7 @@ async function CuratedDetailContent({ params }: Props) {
             <dd className="text-muted mt-2">{project.metadata.collectedAt}</dd>
           </div>
           <a
-            className="bg-action text-canvas w-fit rounded-lg px-4 py-3 font-bold"
+            className="bg-action text-canvas w-fit rounded-md px-4 py-3 font-bold focus-visible:outline-2 focus-visible:outline-offset-2"
             href={project.metadata.sourceRepositoryUrl}
             rel="noreferrer"
             target="_blank"
@@ -108,7 +111,44 @@ async function CuratedDetailContent({ params }: Props) {
           type="application/ld+json"
         />
       </article>
+      <RelatedLinks locale={locale} />
     </main>
+  );
+}
+
+function RelatedLinks({ locale }: { locale: string }) {
+  return (
+    <aside
+      className="bg-surface text-ink border-line border-y"
+      aria-label="继续浏览"
+    >
+      <div className="max-w-reading mx-auto px-4 py-12 sm:px-6">
+        <p className="tracking-eyebrow text-brand text-xs font-bold">
+          CONTINUE READING
+        </p>
+        <h2 className="mt-3 text-2xl font-medium">继续浏览真实内容</h2>
+        <nav className="mt-6 flex flex-wrap gap-3" aria-label="相关内容入口">
+          <Link
+            className="border-line rounded-md border px-4 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+            href={`/${locale}/curated`}
+          >
+            全部精选项目
+          </Link>
+          <Link
+            className="border-line rounded-md border px-4 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+            href={`/${locale}/projects`}
+          >
+            个人项目
+          </Link>
+          <Link
+            className="border-line rounded-md border px-4 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+            href={`/${locale}/blog`}
+          >
+            全部博客
+          </Link>
+        </nav>
+      </div>
+    </aside>
   );
 }
 

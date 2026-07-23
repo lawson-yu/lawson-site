@@ -26,13 +26,13 @@ async function AboutContent({ params }: AboutPageProps) {
       className="max-w-site mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8"
       lang={locale}
     >
-      <p className="tracking-eyebrow text-accent text-sm font-bold">
+      <p className="tracking-eyebrow text-muted text-sm font-bold">
         ABOUT LAWSON
       </p>
       <h1 className="mt-4 max-w-4xl text-5xl leading-none font-extrabold tracking-tight sm:text-7xl">
         把 AI 与工程实践写成可验证的真实经验。
       </h1>
-      <div className="text-muted mt-10 grid max-w-4xl gap-8 text-lg leading-8 lg:grid-cols-2">
+      <div className="border-line mt-12 grid max-w-4xl gap-8 border-t pt-8 text-lg leading-8 text-balance lg:grid-cols-2">
         <p>
           LAWSON
           记录真实项目中的问题、选择、结果和仍待改进的部分。重点不是追逐概念，而是将工具、系统与工作流放回具体约束中讨论。

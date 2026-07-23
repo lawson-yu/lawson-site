@@ -33,27 +33,27 @@ async function BlogListContent({ params, searchParams }: BlogListPageProps) {
 
   return (
     <main className="bg-canvas text-ink min-h-screen" lang={locale}>
-      <section className="max-w-site mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <p className="tracking-eyebrow text-accent text-sm font-bold">
+      <section className="max-w-site mx-auto px-4 py-12 min-[992px]:py-18 sm:px-6 lg:px-8">
+        <p className="tracking-eyebrow text-muted font-mono text-xs font-medium">
           FIELD NOTES
         </p>
-        <h1 className="mt-4 max-w-3xl text-5xl leading-none font-extrabold tracking-tight sm:text-7xl">
+        <h1 className="mt-3 max-w-3xl text-4xl leading-[1.1] font-light tracking-tight min-[992px]:text-6xl sm:text-5xl">
           博客
         </h1>
-        <p className="text-muted mt-6 max-w-2xl text-lg leading-8">
+        <p className="text-muted mt-4 max-w-2xl text-base leading-7">
           关于 AI、工程实践与可持续维护的技术系统。
         </p>
 
-        <div className="mt-16 grid gap-4">
+        <div className="border-line mt-8 border-t pt-8 min-[992px]:mt-16 min-[992px]:pt-10">
+          <p className="text-muted font-mono text-xs">已发布文章目录</p>
+        </div>
+        <div className="mt-10 grid gap-x-10 gap-y-10 min-[768px]:grid-cols-2 min-[992px]:grid-cols-3 min-[992px]:gap-y-16">
           {blogs.map((blog) => (
-            <article
-              className="border-line bg-surface hover:border-brand hover:bg-surface-raised border p-6 transition-colors sm:p-8"
-              key={blog.slug}
-            >
+            <article className="border-line border-t pt-5" key={blog.slug}>
               <div className="flex flex-wrap gap-2">
                 {blog.tags.map((tag) => (
                   <Link
-                    className="border-line text-accent rounded-full border px-3 py-1 text-xs font-semibold"
+                    className="border-line text-muted rounded-control bg-surface border px-2.5 py-1 font-mono text-[11px] leading-4"
                     href={`/${locale}/blog?tag=${encodeURIComponent(tag.slug)}`}
                     key={tag.slug}
                   >
@@ -61,18 +61,16 @@ async function BlogListContent({ params, searchParams }: BlogListPageProps) {
                   </Link>
                 ))}
               </div>
-              <h2 className="mt-6 text-2xl font-bold sm:text-3xl">
+              <h2 className="mt-5 text-2xl leading-tight font-light tracking-tight">
                 <Link
-                  className="focus-visible:ring-brand outline-none focus-visible:ring-2"
+                  className="hover:text-muted focus-visible:ring-brand outline-none focus-visible:ring-2"
                   href={`/${locale}/blog/${blog.slug}`}
                 >
                   {blog.title}
                 </Link>
               </h2>
-              <p className="text-muted mt-4 max-w-3xl leading-7">
-                {blog.summary}
-              </p>
-              <p className="text-muted mt-6 text-sm">
+              <p className="text-muted mt-3 leading-6">{blog.summary}</p>
+              <p className="text-muted mt-5 font-mono text-xs">
                 发布于{" "}
                 {new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(
                   new Date(blog.publishedAt),

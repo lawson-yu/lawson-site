@@ -76,7 +76,7 @@ export function MediaUpload({ variantId }: { variantId?: string }) {
   }
 
   return (
-    <fieldset className="border-line grid gap-3 rounded-lg border p-4">
+    <fieldset className="border-line bg-surface grid gap-3 rounded-md border p-4">
       <legend className="px-1 text-sm font-semibold">添加受管图片</legend>
       <input
         accept="image/jpeg,image/png,image/webp,image/gif"
@@ -87,7 +87,7 @@ export function MediaUpload({ variantId }: { variantId?: string }) {
       <label className="grid gap-2 text-sm font-semibold">
         图片替代文本
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-2"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-2 outline-none focus-visible:ring-2"
           onChange={(event) => setAlt(event.target.value)}
           value={alt}
         />
@@ -98,7 +98,7 @@ export function MediaUpload({ variantId }: { variantId?: string }) {
         </p>
       ) : null}
       <button
-        className="border-line min-h-11 w-fit rounded-lg border px-4 py-2 font-semibold disabled:opacity-60"
+        className="border-line text-ink focus-visible:ring-brand min-h-11 w-fit rounded-md border px-4 py-2 font-semibold outline-none focus-visible:ring-2 disabled:opacity-60"
         disabled={uploading}
         onClick={() => void upload()}
         type="button"
@@ -114,7 +114,7 @@ export function MediaUpload({ variantId }: { variantId?: string }) {
             >
               <span>{asset.alt}</span>
               <button
-                className="text-accent underline"
+                className="text-accent focus-visible:ring-brand min-h-11 px-2 underline outline-none focus-visible:ring-2"
                 onClick={() => void remove(asset.id)}
                 type="button"
               >

@@ -43,27 +43,56 @@ export function MarkdownContent({ markdown }: { markdown: string }) {
           );
         },
         h1: ({ children }) => (
-          <h2 className="mt-12 text-3xl font-bold">{children}</h2>
+          <h2 className="mt-12 text-3xl font-medium tracking-tight">
+            {children}
+          </h2>
         ),
         h2: ({ children }) => (
-          <h2 className="mt-12 text-3xl font-bold">{children}</h2>
+          <h2 className="mt-12 text-3xl font-medium tracking-tight">
+            {children}
+          </h2>
         ),
         h3: ({ children }) => (
-          <h3 className="mt-8 text-xl font-bold">{children}</h3>
+          <h3 className="mt-8 text-xl font-semibold">{children}</h3>
         ),
         img: ({ alt, src }) => (
           // Markdown's image alt is preserved rather than inferred from the filename.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             alt={alt || "内容图片"}
-            className="border-line my-8 max-w-full border"
+            className="border-line my-8 max-w-full rounded-md border"
             src={src}
           />
         ),
         p: ({ children }) => (
-          <p className="text-muted my-6 leading-8">{children}</p>
+          <p className="text-muted my-6 text-lg leading-8">{children}</p>
+        ),
+        ol: ({ children }) => (
+          <ol className="text-muted my-6 list-decimal space-y-2 pl-6 text-lg leading-8">
+            {children}
+          </ol>
         ),
         pre: ({ children }) => <>{children}</>,
+        table: ({ children }) => (
+          <div className="my-8 overflow-x-auto">
+            <table className="border-line w-full border-collapse text-left text-sm">
+              {children}
+            </table>
+          </div>
+        ),
+        td: ({ children }) => (
+          <td className="border-line border p-3 align-top">{children}</td>
+        ),
+        th: ({ children }) => (
+          <th className="border-line bg-surface-raised border p-3 font-semibold">
+            {children}
+          </th>
+        ),
+        ul: ({ children }) => (
+          <ul className="text-muted my-6 list-disc space-y-2 pl-6 text-lg leading-8">
+            {children}
+          </ul>
+        ),
       }}
       remarkPlugins={[remarkGfm]}
     >

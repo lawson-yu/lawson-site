@@ -12,6 +12,7 @@ export function BlogLifecycleActions({
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [displayState, setDisplayState] = useState(state);
   const [working, setWorking] = useState(false);
 
   async function run(action: "edit" | "publish" | "unpublish") {
@@ -32,14 +33,15 @@ export function BlogLifecycleActions({
       router.push(`/author/blog/${(result as { id: string }).id}`);
       return;
     }
+    setDisplayState(action === "publish" ? "published" : "draft");
     router.refresh();
   }
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      {state === "draft" ? (
+      {displayState === "draft" ? (
         <button
-          className="border-line text-ink min-h-11 rounded-lg border px-4 py-2 font-semibold"
+          className="bg-action text-canvas focus-visible:ring-brand min-h-11 rounded-md px-4 py-2 font-semibold outline-none focus-visible:ring-2"
           disabled={working}
           onClick={() => void run("publish")}
           type="button"
@@ -49,7 +51,7 @@ export function BlogLifecycleActions({
       ) : (
         <>
           <button
-            className="border-line text-ink min-h-11 rounded-lg border px-4 py-2 font-semibold"
+            className="border-line text-ink focus-visible:ring-brand min-h-11 rounded-md border px-4 py-2 font-semibold outline-none focus-visible:ring-2"
             disabled={working}
             onClick={() => void run("edit")}
             type="button"
@@ -57,7 +59,7 @@ export function BlogLifecycleActions({
             创建编辑草稿
           </button>
           <button
-            className="border-line text-ink min-h-11 rounded-lg border px-4 py-2 font-semibold"
+            className="border-line text-ink focus-visible:ring-brand min-h-11 rounded-md border px-4 py-2 font-semibold outline-none focus-visible:ring-2"
             disabled={working}
             onClick={() => void run("unpublish")}
             type="button"

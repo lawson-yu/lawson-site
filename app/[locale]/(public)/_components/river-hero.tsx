@@ -186,7 +186,6 @@ function RiverRipples() {
     </div>
   );
 }
-
 export function RiverHero() {
   return (
     <section
@@ -200,10 +199,10 @@ export function RiverHero() {
         fill
         priority
         sizes="100vw"
-        src="/images/river-hero-background-v2.png"
+        src="/images/hero-river-light-v1.png"
         unoptimized
       />
-      <div className="from-canvas via-canvas/72 absolute inset-0 bg-linear-to-r to-[#08121d]/20" />
+      <div className="from-canvas via-canvas/72 absolute inset-0 bg-linear-to-r to-transparent" />
       <div className="from-canvas via-canvas/35 absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t to-transparent" />
 
       <div className="max-w-site relative mx-auto flex h-full items-start px-4 pt-20 sm:px-6 sm:pt-28 lg:px-8 lg:pt-36">

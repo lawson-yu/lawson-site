@@ -61,7 +61,7 @@ export function BlogForm({ blog, tags }: BlogFormProps) {
       <label className="grid gap-2 text-sm font-semibold">
         标题
         <input
-          className="border-line bg-canvas text-ink focus-visible:ring-brand rounded-lg border px-3 py-3 outline-none focus-visible:ring-2"
+          className="border-line bg-canvas text-ink focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={blog?.title}
           maxLength={160}
           name="title"
@@ -72,7 +72,7 @@ export function BlogForm({ blog, tags }: BlogFormProps) {
       <label className="grid gap-2 text-sm font-semibold">
         URL slug
         <input
-          className="border-line bg-canvas text-ink focus-visible:ring-brand rounded-lg border px-3 py-3 font-mono outline-none focus-visible:ring-2"
+          className="border-line bg-canvas text-ink focus-visible:ring-brand rounded-md border px-3 py-3 font-mono outline-none focus-visible:ring-2"
           defaultValue={blog?.slug}
           maxLength={120}
           name="slug"
@@ -83,7 +83,7 @@ export function BlogForm({ blog, tags }: BlogFormProps) {
       <label className="grid gap-2 text-sm font-semibold">
         摘要
         <textarea
-          className="border-line bg-canvas text-ink focus-visible:ring-brand min-h-28 rounded-lg border px-3 py-3 outline-none focus-visible:ring-2"
+          className="border-line bg-canvas text-ink focus-visible:ring-brand min-h-28 rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={blog?.summary}
           maxLength={320}
           name="summary"
@@ -95,7 +95,7 @@ export function BlogForm({ blog, tags }: BlogFormProps) {
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <label
-              className="border-line flex min-h-11 items-center gap-2 rounded-full border px-3 py-2 text-sm"
+              className="border-line flex min-h-11 items-center gap-2 rounded-md border px-3 py-2 text-sm"
               key={tag.id}
             >
               <input
@@ -115,7 +115,7 @@ export function BlogForm({ blog, tags }: BlogFormProps) {
       <label className="grid gap-2 text-sm font-semibold">
         Markdown 正文
         <textarea
-          className="border-line bg-canvas text-ink focus-visible:ring-brand min-h-96 rounded-lg border px-3 py-3 font-mono text-sm leading-7 outline-none focus-visible:ring-2"
+          className="border-line bg-canvas text-ink focus-visible:ring-brand min-h-96 rounded-md border px-3 py-3 font-mono text-sm leading-7 outline-none focus-visible:ring-2"
           defaultValue={blog?.bodyMarkdown}
           maxLength={50_000}
           name="bodyMarkdown"
@@ -128,7 +128,7 @@ export function BlogForm({ blog, tags }: BlogFormProps) {
         </p>
       ) : null}
       <button
-        className="bg-action text-canvas min-h-11 w-fit rounded-lg px-5 py-3 font-bold disabled:opacity-60"
+        className="bg-action text-canvas focus-visible:ring-brand min-h-11 w-fit rounded-md px-5 py-3 font-bold outline-none focus-visible:ring-2 disabled:opacity-60"
         disabled={saving}
         type="submit"
       >

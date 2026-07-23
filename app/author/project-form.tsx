@@ -65,7 +65,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         标题
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.title}
           maxLength={160}
           name="title"
@@ -76,7 +76,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         URL slug
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3 font-mono"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 font-mono outline-none focus-visible:ring-2"
           defaultValue={project?.slug}
           maxLength={120}
           name="slug"
@@ -87,7 +87,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         摘要
         <textarea
-          className="border-line bg-canvas min-h-28 rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand min-h-28 rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.summary}
           maxLength={320}
           name="summary"
@@ -97,7 +97,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         问题
         <textarea
-          className="border-line bg-canvas min-h-28 rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand min-h-28 rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.metadata.problem}
           name="problem"
           required
@@ -106,7 +106,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         成果
         <textarea
-          className="border-line bg-canvas min-h-28 rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand min-h-28 rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.metadata.outcomes}
           name="outcomes"
           required
@@ -115,7 +115,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         技术栈（用逗号分隔）
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.metadata.techStack.join(", ")}
           name="techStack"
           required
@@ -124,7 +124,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         代码仓库
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.metadata.repositoryUrl}
           name="repositoryUrl"
           type="url"
@@ -134,7 +134,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         演示链接（可选）
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.metadata.demoUrl ?? ""}
           name="demoUrl"
           type="url"
@@ -143,7 +143,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         封面链接（可选）
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.metadata.coverImageUrl ?? ""}
           name="coverImageUrl"
           type="url"
@@ -162,7 +162,7 @@ export function ProjectForm({
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <label
-              className="border-line flex min-h-11 items-center gap-2 rounded-full border px-3 py-2 text-sm"
+              className="border-line flex min-h-11 items-center gap-2 rounded-md border px-3 py-2 text-sm"
               key={tag.id}
             >
               <input
@@ -179,7 +179,7 @@ export function ProjectForm({
       <label className="grid gap-2 text-sm font-semibold">
         项目说明（Markdown）
         <textarea
-          className="border-line bg-canvas min-h-96 rounded-lg border px-3 py-3 font-mono text-sm"
+          className="border-line bg-canvas focus-visible:ring-brand min-h-96 rounded-md border px-3 py-3 font-mono text-sm outline-none focus-visible:ring-2"
           defaultValue={project?.bodyMarkdown}
           maxLength={50_000}
           name="bodyMarkdown"
@@ -192,7 +192,7 @@ export function ProjectForm({
         </p>
       ) : null}
       <button
-        className="bg-action text-canvas min-h-11 w-fit rounded-lg px-5 py-3 font-bold disabled:opacity-60"
+        className="bg-action text-canvas focus-visible:ring-brand min-h-11 w-fit rounded-md px-5 py-3 font-bold outline-none focus-visible:ring-2 disabled:opacity-60"
         disabled={saving}
         type="submit"
       >

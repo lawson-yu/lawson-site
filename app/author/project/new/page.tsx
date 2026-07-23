@@ -9,14 +9,23 @@ export default async function NewProjectPage() {
   await connection();
   if (!(await getAuthorIdentity())) redirect("/auth/login?error=unauthorized");
   return (
-    <main className="bg-canvas text-ink min-h-screen px-4 py-12 sm:px-6">
-      <section className="max-w-reading mx-auto">
-        <p className="tracking-eyebrow text-accent text-sm font-bold">
-          AUTHOR WORKSPACE
-        </p>
-        <h1 className="mt-3 text-4xl font-extrabold">新建个人项目</h1>
-        <div className="mt-10">
-          <ProjectForm tags={await listWorkspaceTags()} />
+    <main className="bg-canvas text-ink min-h-screen px-4 py-10 sm:px-6 lg:px-8">
+      <section className="max-w-site mx-auto">
+        <header className="border-line border-b pb-8">
+          <p className="tracking-eyebrow text-accent text-sm font-bold">
+            AUTHOR WORKSPACE
+          </p>
+          <h1 className="mt-3 text-4xl font-extrabold tracking-tight">
+            新建个人项目
+          </h1>
+        </header>
+        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
+          <div>
+            <ProjectForm tags={await listWorkspaceTags()} />
+          </div>
+          <aside className="border-line bg-surface h-fit rounded-md border p-5 text-sm leading-6">
+            保存后可在内容页预览、发布或撤回草稿。
+          </aside>
         </div>
       </section>
     </main>

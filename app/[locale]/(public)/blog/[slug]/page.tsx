@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
-import { BlogHeader } from "../_components/blog-header";
 import { MarkdownContent } from "./markdown-content";
 import { getPublishedBlog, supportedLocale } from "@/lib/content/catalog";
 
@@ -67,12 +66,11 @@ async function BlogDetailContent({ params }: BlogDetailPageProps) {
 
   return (
     <main className="bg-canvas text-ink min-h-screen" lang={locale}>
-      <BlogHeader locale={locale} />
       <article className="max-w-reading mx-auto px-4 py-16 sm:px-6 sm:py-24">
-        <p className="tracking-eyebrow text-accent text-sm font-bold">
+        <p className="tracking-eyebrow text-accent text-xs font-bold">
           ENGINEERING NOTE
         </p>
-        <h1 className="mt-4 text-4xl leading-tight font-extrabold tracking-tight sm:text-6xl">
+        <h1 className="mt-4 text-4xl leading-tight font-medium tracking-tight sm:text-6xl">
           {blog.title}
         </h1>
         <p className="text-muted mt-6 text-xl leading-8">{blog.summary}</p>
@@ -88,7 +86,7 @@ async function BlogDetailContent({ params }: BlogDetailPageProps) {
         <div className="mt-6 flex flex-wrap gap-2">
           {blog.tags.map((tag) => (
             <Link
-              className="border-line text-accent rounded-full border px-3 py-1 text-xs font-semibold"
+              className="border-line text-accent rounded-md border px-3 py-1 text-xs font-semibold"
               href={`/${locale}/blog?tag=${encodeURIComponent(tag.slug)}`}
               key={tag.slug}
             >
@@ -100,11 +98,48 @@ async function BlogDetailContent({ params }: BlogDetailPageProps) {
           <MarkdownContent markdown={blog.bodyMarkdown} />
         </div>
       </article>
+      <RelatedLinks locale={locale} />
       <script
         dangerouslySetInnerHTML={{ __html: jsonLd }}
         type="application/ld+json"
       />
     </main>
+  );
+}
+
+function RelatedLinks({ locale }: { locale: string }) {
+  return (
+    <aside
+      className="bg-surface text-ink border-line border-y"
+      aria-label="继续浏览"
+    >
+      <div className="max-w-reading mx-auto px-4 py-12 sm:px-6">
+        <p className="tracking-eyebrow text-brand text-xs font-bold">
+          CONTINUE READING
+        </p>
+        <h2 className="mt-3 text-2xl font-medium">继续浏览真实内容</h2>
+        <nav className="mt-6 flex flex-wrap gap-3" aria-label="相关内容入口">
+          <Link
+            className="border-line rounded-md border px-4 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+            href={`/${locale}/blog`}
+          >
+            全部博客
+          </Link>
+          <Link
+            className="border-line rounded-md border px-4 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+            href={`/${locale}/projects`}
+          >
+            个人项目
+          </Link>
+          <Link
+            className="border-line rounded-md border px-4 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+            href={`/${locale}/curated`}
+          >
+            精选项目
+          </Link>
+        </nav>
+      </div>
+    </aside>
   );
 }
 

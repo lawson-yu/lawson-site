@@ -27,8 +27,8 @@ export default async function EditBlogPage({
   }
 
   return (
-    <main className="bg-canvas text-ink min-h-screen px-4 py-12 sm:px-6">
-      <section className="max-w-reading mx-auto">
+    <main className="bg-canvas text-ink min-h-screen px-4 py-10 sm:px-6 lg:px-8">
+      <section className="max-w-site mx-auto">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-muted text-sm">
@@ -43,11 +43,16 @@ export default async function EditBlogPage({
             预览
           </Link>
         </div>
-        <div className="mt-8">
-          <BlogLifecycleActions id={blog.id} state={blog.state} />
-        </div>
-        <div className="mt-10">
-          <BlogForm blog={blog} tags={tags} />
+        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
+          <div>
+            <BlogForm blog={blog} tags={tags} />
+          </div>
+          <aside className="border-line bg-surface h-fit rounded-md border p-5">
+            <h2 className="text-lg font-bold">内容状态</h2>
+            <div className="mt-4">
+              <BlogLifecycleActions id={blog.id} state={blog.state} />
+            </div>
+          </aside>
         </div>
       </section>
     </main>

@@ -66,7 +66,7 @@ export function CuratedForm({
       <label className="grid gap-2 text-sm font-semibold">
         标题
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.title}
           maxLength={160}
           name="title"
@@ -76,7 +76,7 @@ export function CuratedForm({
       <label className="grid gap-2 text-sm font-semibold">
         URL slug
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3 font-mono"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 font-mono outline-none focus-visible:ring-2"
           defaultValue={project?.slug}
           maxLength={120}
           name="slug"
@@ -87,7 +87,7 @@ export function CuratedForm({
       <label className="grid gap-2 text-sm font-semibold">
         摘要
         <textarea
-          className="border-line bg-canvas min-h-28 rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand min-h-28 rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.summary}
           maxLength={320}
           name="summary"
@@ -97,7 +97,7 @@ export function CuratedForm({
       <label className="grid gap-2 text-sm font-semibold">
         来源仓库
         <input
-          className="border-line bg-canvas rounded-lg border px-3 py-3"
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
           defaultValue={project?.metadata.sourceRepositoryUrl}
           name="sourceRepositoryUrl"
           type="url"
@@ -109,7 +109,7 @@ export function CuratedForm({
           {label}
           {kind === "textarea" ? (
             <textarea
-              className="border-line bg-canvas min-h-28 rounded-lg border px-3 py-3"
+              className="border-line bg-canvas focus-visible:ring-brand min-h-28 rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
               defaultValue={value}
               name={name}
               required
@@ -121,7 +121,7 @@ export function CuratedForm({
         <label className="grid gap-2 text-sm font-semibold">
           收录日期
           <input
-            className="border-line bg-canvas rounded-lg border px-3 py-3"
+            className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
             defaultValue={project?.metadata.collectedAt}
             name="collectedAt"
             type="date"
@@ -131,7 +131,7 @@ export function CuratedForm({
         <label className="grid gap-2 text-sm font-semibold">
           周信息
           <input
-            className="border-line bg-canvas rounded-lg border px-3 py-3"
+            className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
             defaultValue={project?.metadata.week}
             name="week"
             pattern="\d{4}-W\d{2}"
@@ -145,7 +145,7 @@ export function CuratedForm({
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <label
-              className="border-line flex min-h-11 items-center gap-2 rounded-full border px-3 py-2 text-sm"
+              className="border-line flex min-h-11 items-center gap-2 rounded-md border px-3 py-2 text-sm"
               key={tag.id}
             >
               <input
@@ -162,7 +162,7 @@ export function CuratedForm({
       <label className="grid gap-2 text-sm font-semibold">
         精选说明（Markdown）
         <textarea
-          className="border-line bg-canvas min-h-96 rounded-lg border px-3 py-3 font-mono text-sm"
+          className="border-line bg-canvas focus-visible:ring-brand min-h-96 rounded-md border px-3 py-3 font-mono text-sm outline-none focus-visible:ring-2"
           defaultValue={project?.bodyMarkdown}
           maxLength={50_000}
           name="bodyMarkdown"
@@ -176,7 +176,7 @@ export function CuratedForm({
         </p>
       ) : null}
       <button
-        className="bg-action text-canvas min-h-11 w-fit rounded-lg px-5 py-3 font-bold disabled:opacity-60"
+        className="bg-action text-canvas focus-visible:ring-brand min-h-11 w-fit rounded-md px-5 py-3 font-bold outline-none focus-visible:ring-2 disabled:opacity-60"
         disabled={saving}
         type="submit"
       >

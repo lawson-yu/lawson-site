@@ -71,7 +71,10 @@ test.describe("作者博客生命周期", () => {
         page.getByRole("heading", { name: "内容工作区" }),
       ).toBeVisible();
 
-      await page.getByRole("link", { name: "新建博客", exact: true }).click();
+      await page
+        .getByRole("navigation", { name: "新建内容" })
+        .getByRole("link", { name: "新建博客", exact: true })
+        .click();
       await page.getByLabel("标题").first().fill(title);
       await page.getByLabel("URL slug").first().fill(slug);
       await page

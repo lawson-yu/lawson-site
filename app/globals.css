@@ -1,18 +1,22 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-accent: #ff3b9d;
-  --color-action: #ffd400;
-  --color-brand: #7896ff;
-  --color-canvas: #080b0c;
-  --color-ink: #f4f6fa;
-  --color-line: #334252;
-  --color-muted: #a7b0bf;
-  --color-surface: #101b25;
-  --color-surface-raised: #162534;
+  --color-accent: #7fc8ff;
+  --color-action: #7fc8ff;
+  --color-brand: #161f34;
+  --color-canvas: #f2faff;
+  --color-ink: #030710;
+  --color-inverse: #030710;
+  --color-inverse-ink: #cce9ff;
+  --color-line: #cce9ff;
+  --color-muted: #40668d;
+  --color-surface: #e5f4ff;
+  --color-surface-raised: #f2faff;
   --container-reading: 720px;
   --container-site: 1200px;
   --tracking-eyebrow: 0.16em;
+  --radius-control: 6px;
+  --radius-media: 12px;
 }
 
 @layer base {
@@ -27,6 +31,11 @@
       "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     background: var(--color-canvas);
     color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(0 95 204);
+    outline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {
