@@ -1,0 +1,431 @@
+{
+  "canvas": {
+    "width": 1440,
+    "height": 920,
+    "fps": 20,
+    "frames": 56
+  },
+  "theme": {
+    "name": "light",
+    "motion_color": "#006fba"
+  },
+  "title": {
+    "text": "Lawson Site",
+    "highlight": "Agent Harness",
+    "subtitle": "仓库内脚手架把人类意图转成可验证改动，并沉淀可接手状态"
+  },
+  "nodes": [
+    {
+      "id": "intent-bg",
+      "type": "box",
+      "layer": "background",
+      "label": "",
+      "body": "",
+      "x": 44,
+      "y": 150,
+      "w": 310,
+      "h": 570,
+      "color": "green"
+    },
+    {
+      "id": "intent-title",
+      "type": "label",
+      "label": "人类掌舵",
+      "x": 76,
+      "y": 178,
+      "w": 245,
+      "h": 34,
+      "size": 22,
+      "bold": true
+    },
+    {
+      "id": "goal",
+      "type": "box",
+      "label": "Goal",
+      "body": "宽目标\n验收条件\n停止条件",
+      "x": 78,
+      "y": 245,
+      "w": 242,
+      "h": 122,
+      "label_h": 38,
+      "label_size": 20,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "green"
+    },
+    {
+      "id": "tracker",
+      "type": "box",
+      "label": ".scratch/",
+      "body": "spec.md\nissues/NN-*.md\nStatus 行",
+      "x": 78,
+      "y": 420,
+      "w": 242,
+      "h": 132,
+      "label_h": 40,
+      "label_size": 20,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "green"
+    },
+    {
+      "id": "handoff",
+      "type": "box",
+      "label": "handoff.md",
+      "body": "当前状态\n风险\n下一步",
+      "x": 78,
+      "y": 600,
+      "w": 242,
+      "h": 118,
+      "label_h": 38,
+      "label_size": 20,
+      "body_size": 13,
+      "label_bold": true,
+      "color": "purple"
+    },
+    {
+      "id": "repo-bg",
+      "type": "box",
+      "layer": "background",
+      "label": "",
+      "body": "",
+      "x": 395,
+      "y": 150,
+      "w": 425,
+      "h": 570,
+      "color": "blue"
+    },
+    {
+      "id": "repo-title",
+      "type": "label",
+      "label": "仓库 Harness",
+      "x": 512,
+      "y": 178,
+      "w": 220,
+      "h": 34,
+      "size": 23,
+      "bold": true
+    },
+    {
+      "id": "map",
+      "type": "box",
+      "label": "可读地图",
+      "body": "AGENTS.md\ndocs/index.md\ndocs/arch",
+      "x": 430,
+      "y": 238,
+      "w": 160,
+      "h": 140,
+      "label_h": 38,
+      "label_size": 18,
+      "body_size": 11,
+      "label_bold": true,
+      "color": "blue"
+    },
+    {
+      "id": "graph",
+      "type": "box",
+      "label": "代码图谱",
+      "body": "search_graph\ntrace_path\nsnippets",
+      "x": 625,
+      "y": 238,
+      "w": 160,
+      "h": 140,
+      "label_h": 38,
+      "label_size": 18,
+      "body_size": 11,
+      "label_bold": true,
+      "color": "purple"
+    },
+    {
+      "id": "devlocal",
+      "type": "box",
+      "label": "dev-local",
+      "body": "dev-local.sh up\nlocalhost:3000\ntmux logs",
+      "x": 430,
+      "y": 438,
+      "w": 160,
+      "h": 142,
+      "label_h": 38,
+      "label_size": 18,
+      "body_size": 10,
+      "label_bold": true,
+      "color": "green"
+    },
+    {
+      "id": "skills",
+      "type": "box",
+      "label": "Skills",
+      "body": "$implement\n$verify\n$code-review",
+      "x": 625,
+      "y": 438,
+      "w": 160,
+      "h": 142,
+      "label_h": 38,
+      "label_size": 18,
+      "body_size": 12,
+      "label_bold": true,
+      "color": "purple"
+    },
+    {
+      "id": "agent-bg",
+      "type": "box",
+      "layer": "background",
+      "label": "",
+      "body": "",
+      "x": 860,
+      "y": 150,
+      "w": 525,
+      "h": 570,
+      "color": "purple"
+    },
+    {
+      "id": "agent-title",
+      "type": "label",
+      "label": "Agent 回路",
+      "x": 1018,
+      "y": 178,
+      "w": 210,
+      "h": 34,
+      "size": 23,
+      "bold": true
+    },
+    {
+      "id": "implement",
+      "type": "box",
+      "label": "实现",
+      "body": "小 ticket\n手术改动\n沿用模式",
+      "x": 895,
+      "y": 245,
+      "w": 165,
+      "h": 132,
+      "label_h": 38,
+      "label_size": 19,
+      "body_size": 12,
+      "label_bold": true,
+      "color": "blue"
+    },
+    {
+      "id": "verify",
+      "type": "box",
+      "label": "/verify",
+      "body": "新 verifier\n真实浏览器\nevidence/",
+      "x": 1100,
+      "y": 245,
+      "w": 165,
+      "h": 132,
+      "label_h": 38,
+      "label_size": 19,
+      "body_size": 12,
+      "label_bold": true,
+      "color": "green"
+    },
+    {
+      "id": "gate",
+      "type": "diamond",
+      "label": "通过？",
+      "body": "修复或交付",
+      "x": 1010,
+      "y": 430,
+      "w": 150,
+      "h": 150,
+      "label_size": 20,
+      "body_size": 12,
+      "label_bold": true,
+      "color": "red"
+    },
+    {
+      "id": "sweep",
+      "type": "box",
+      "label": "回归检查",
+      "body": "pnpm verify\npnpm build\npnpm test:e2e",
+      "x": 895,
+      "y": 625,
+      "w": 180,
+      "h": 100,
+      "label_h": 34,
+      "label_size": 18,
+      "body_size": 11,
+      "label_bold": true,
+      "color": "blue"
+    },
+    {
+      "id": "ship",
+      "type": "box",
+      "label": "Review / PR",
+      "body": "证据链接\n可审阅 diff\n默认不部署",
+      "x": 1110,
+      "y": 625,
+      "w": 205,
+      "h": 100,
+      "label_h": 34,
+      "label_size": 18,
+      "body_size": 11,
+      "label_bold": true,
+      "color": "purple"
+    },
+    {
+      "id": "ci",
+      "type": "box",
+      "label": "CI",
+      "body": "lint + types\n生产构建\ne2e smoke",
+      "x": 1170,
+      "y": 430,
+      "w": 155,
+      "h": 118,
+      "label_h": 34,
+      "label_size": 18,
+      "body_size": 11,
+      "label_bold": true,
+      "color": "blue"
+    },
+    {
+      "id": "feedback",
+      "type": "box",
+      "label": "持久状态",
+      "body": "resolved 状态\nhandoff 更新\nevidence 路径",
+      "x": 430,
+      "y": 780,
+      "w": 855,
+      "h": 82,
+      "label_h": 30,
+      "label_size": 18,
+      "body_size": 12,
+      "label_bold": true,
+      "color": "purple"
+    }
+  ],
+  "edges": [
+    {
+      "from": "goal",
+      "to": "tracker",
+      "label": "拆分"
+    },
+    {
+      "from": "tracker",
+      "to": "handoff",
+      "label": "记录"
+    },
+    {
+      "points": [
+        [320, 485],
+        [375, 485],
+        [430, 308]
+      ],
+      "label": "上下文"
+    },
+    {
+      "points": [
+        [320, 650],
+        [375, 650],
+        [430, 510]
+      ],
+      "label": "接手"
+    },
+    {
+      "from": "map",
+      "to": "graph",
+      "label": "发现"
+    },
+    {
+      "from": "devlocal",
+      "to": "skills",
+      "label": "驱动应用"
+    },
+    {
+      "points": [
+        [785, 308],
+        [845, 308],
+        [895, 310]
+      ],
+      "label": "规则"
+    },
+    {
+      "points": [
+        [785, 510],
+        [845, 510],
+        [895, 310]
+      ],
+      "label": "执行"
+    },
+    {
+      "from": "implement",
+      "to": "verify",
+      "label": "证明"
+    },
+    {
+      "from": "verify",
+      "to": "gate",
+      "label": "观察"
+    },
+    {
+      "points": [
+        [1010, 505],
+        [900, 505],
+        [900, 380]
+      ],
+      "label": "红：修",
+      "stroke": "#b3261e"
+    },
+    {
+      "from": "gate",
+      "to": "sweep",
+      "label": "绿"
+    },
+    {
+      "from": "gate",
+      "to": "ci",
+      "label": "合入门"
+    },
+    {
+      "from": "sweep",
+      "to": "ship",
+      "label": "证据"
+    },
+    {
+      "points": [
+        [1212, 725],
+        [1212, 780],
+        [858, 780]
+      ],
+      "label": "沉淀"
+    },
+    {
+      "points": [
+        [430, 822],
+        [198, 822],
+        [198, 718]
+      ],
+      "label": "新聊天"
+    }
+  ],
+  "animation": {
+    "motion_color": "#006fba",
+    "paths": [
+      {
+        "edge": 0
+      },
+      {
+        "edge": 2
+      },
+      {
+        "edge": 7
+      },
+      {
+        "edge": 8
+      },
+      {
+        "edge": 9
+      },
+      {
+        "edge": 12
+      },
+      {
+        "edge": 14
+      },
+      {
+        "edge": 15
+      }
+    ],
+    "pulses": ["tracker", "devlocal", "skills", "verify", "gate", "feedback"]
+  }
+}

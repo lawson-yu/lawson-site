@@ -1,6 +1,7 @@
 ---
 spec_version: 1
-mode: update
+mode: archived-reference
+active_scope: "LAWSON Next.js public site; active visual tokens and page rules live in app/globals.css and app/[locale]/(public)/"
 sources:
   - path: index.html
     kind: source
@@ -26,9 +27,9 @@ tokens:
       ink: { $type: color, $value: "#030710" }
       ice: { $type: color, $value: "#f2faff" }
       pale: { $type: color, $value: "#e5f4ff" }
-      blue: { $type: color, $value: "#7fc8ff" }
+      blue: { $type: color, $value: "#2563eb" }
       navy: { $type: color, $value: "#161f34" }
-      slate: { $type: color, $value: "#40668d" }
+      slate: { $type: color, $value: "#475569" }
       footer-line: { $type: color, $value: "#29425d" }
     semantic:
       canvas: { $type: color, $value: "#f2faff" }
@@ -37,11 +38,11 @@ tokens:
       surface-soft: { $type: color, $value: "#e5f4ff" }
       surface-inverse: { $type: color, $value: "#030710" }
       text-primary: { $type: color, $value: "#030710" }
-      text-muted: { $type: color, $value: "#40668d" }
+      text-muted: { $type: color, $value: "#475569" }
       text-inverse: { $type: color, $value: "#cce9ff" }
       border-soft: { $type: color, $value: "#cce9ff" }
       border-control: { $type: color, $value: "rgb(3 7 16 / 16%)" }
-      action-primary: { $type: color, $value: "#7fc8ff" }
+      action-primary: { $type: color, $value: "#2563eb" }
       action-selected: { $type: color, $value: "#161f34" }
       focus-browser-default:
         { $type: color, $value: "rgb(0 95 204)", exception: true }
@@ -89,8 +90,8 @@ components:
     typography: '"Aeonik Mono Local", "Aeonik Mono", monospace'
     rounded: 6px
   button:
-    backgroundColor: "#7fc8ff"
-    textColor: "#030710"
+    backgroundColor: "#2563eb"
+    textColor: "#ffffff"
     typography: '"Aeonik Mono Local", "Aeonik Mono", monospace'
     rounded: 6px
   courseCard:
@@ -99,12 +100,12 @@ components:
     rounded: 12px
   filter:
     backgroundColor: "#e5f4ff"
-    textColor: "#40668d"
+    textColor: "#475569"
     typography: '"Aeonik Mono Local", "Aeonik Mono", monospace'
     rounded: 6px
   pagination:
     backgroundColor: "#e5f4ff"
-    textColor: "#40668d"
+    textColor: "#475569"
     typography: '"Aeonik Mono Local", "Aeonik Mono", monospace'
     rounded: 6px
   footer:
@@ -114,6 +115,8 @@ components:
 ---
 
 # Design System
+
+> 状态：以下内容是导入时保留的 LangChain Academy 参考，不是当前 LAWSON 站点的设计契约。当前公开站点以 `app/globals.css` 的 token、`app/[locale]/(public)/layout.tsx` 的 shell 与各页面实现为准。
 
 ## Overview
 
@@ -133,12 +136,12 @@ components:
 
 - `ink #030710`：浅色 canvas 的正文、主要标题、桌面目录标题、深色 footer 背景。`collections` 桌面 card 标题/正文也为此色；移动端该 card 例外地用 `#52616d`/`#84929d`，不可抹平。
 - `ice #f2faff`：全局 canvas、导航底色、selected filter 的文字；`pale #e5f4ff`：tag、非选中 filter、浅色 CTA、深色区中的浅按钮。
-- `blue #7fc8ff`：Register、深色区标题与品牌、装饰点。它不是普通正文色；浅底正文不得用它承担长文本。
+- `blue #2563eb`：Register、深色区标题与品牌、装饰点。它不是普通正文色；浅底正文不得用它承担长文本。
 - `navy #161f34`：selected filter/page 背景及文字反白，表达选择状态；不是全局深色 surface。
-- `slate #40668d`：正文弱化、CTA 说明、博客 byline。`#f7f6ff` 只用于 desktop catalogue 两侧的线性渐变，属低频 exception。
-- 边界：导航为 `#e5f4ff`，tag/filter/pagination 为 `#cce9ff`，outline 控件为 `rgb(3 7 16 / 16%)`；深色 footer 用 `#29425d` 分栏。
+- `slate #475569`：正文弱化、CTA 说明、博客 byline。`#f7f6ff` 只用于 desktop catalogue 两侧的线性渐变，属低频 exception。
+- 边界：公开站点 fixed 导航不画实线边框，使用 `canvas` 半透明毛玻璃与 `ring-white/35`；tag/filter/pagination 为 `#cce9ff`，outline 控件为 `rgb(3 7 16 / 16%)`；深色 footer 用 `#29425d` 分栏。
 
-真实 action 状态：Register 只有 normal 背景 `blue`；filter/page selected 使用 `navy` 背景、`ice` 文字；course card hover 标题改 `ink`，箭头平移 `(2px,-2px)`。源码未定义 disabled。浏览器实际键盘 focus 是 `rgb(0,95,204) auto 1px`、`outline-offset:1px`，并非设计的自定义 ring；复刻不得声称已有自定义 focus token。
+真实 action 状态：登录入口使用 `blue` 背景和白色文字；filter/page selected 使用 `navy` 背景、`ice` 文字；course card hover 标题改 `ink`，箭头平移 `(2px,-2px)`。源码未定义 disabled。浏览器实际键盘 focus 是 `rgb(0,95,204) auto 1px`、`outline-offset:1px`，并非设计的自定义 ring；复刻不得声称已有自定义 focus token。
 
 ### Typography
 
@@ -173,7 +176,7 @@ control/tag/pagination 用 6px；course media desktop 12px、mobile 8px；博客
 
 ### Motion
 
-未发现 CSS `transition`、`animation` 或 `@media (prefers-reduced-motion)`；computed `transition: all` 来自浏览器默认而非显式设计规则。唯一确认的视觉状态变化是 hover 立即改变 course 标题色及箭头 `transform: translate(2px,-2px)`。复刻不应新增缓动；若后来加入 motion，`prefers-reduced-motion: reduce` MUST 取消非必要 transform/transition。
+公开首页海面允许 `motion` 慢速动漫水面 shimmer：不跟随鼠标生成圆形 ripple，不做 Material button ripple，不画脱离素材的硬线条。动画必须基于原海浪 PNG 本身做半透明叠影、亮度/饱和度变化、极小幅横向错位和柔光折射，4-4.5s 周期表达湖面/海面流动；hover 命中区覆盖整块海浪视觉范围，进入后轻微增强亮度、饱和度和上浮感，cursor 不变。`prefers-reduced-motion: reduce` MUST 取消该非必要动画。其他内容区仍保持克制；不得给普通 card/section 增加无意义动效。
 
 ### Tailwind CSS
 
@@ -183,13 +186,13 @@ control/tag/pagination 用 6px；course media desktop 12px、mobile 8px；博客
 
 ### Header
 
-Purpose：提供品牌返回、全局导航和认证入口。Anatomy：logo link、primary nav links、Sign In/Register、menu toggle。Variants：`navbar2_*`（首页/详情、fixed）与 `collections-*`（目录、relative）。Sizes：desktop 62px inner nav；mobile collections 60px inner nav。Tokens：`canvas`、`border-soft`、`radius.control`、`mono`。
+Purpose：提供品牌返回、全局导航和认证入口。Anatomy：logo link、居中的 primary nav links、右侧登录入口、menu toggle。Variants：公开站点 header fixed 顶部，半透明毛玻璃，无实线边框；移动菜单展开为半透明浮层。Sizes：desktop 64px inner nav；mobile 64px inner nav。Tokens：`canvas` 半透明、`ring-white/35`、`radius.control`、`mono`。
 
 States/Interaction：992px 以下隐藏 link/actions，显示 48–50px hamburger；点击切换 `.is-open` 和 `aria-expanded`。390px collections 菜单展开为 `x:-10,y:62,w:390,h:782`，全视口高。Accessibility：logo 有可读 `aria-label`，toggle 有 `aria-controls`/`aria-expanded`；桌面菜单用 `nav` label。Allowed contexts：三页 shell。Forbidden：不要把 collections nav 设为 fixed，不要添加未存在的下拉菜单或登录 modal。
 
 ### Button
 
-Purpose：导航认证和 CTA。Anatomy：单行文字 anchor/button。Variants：outline secondary（透明，`border-control`）；filled primary/Register（`action-primary`）；深色区 secondary（浅边界+反白）。Sizes：nav desktop minimum 48px、padding `12px 24px`；blog CTA 38px、`10px 16px`。Tokens：`mono` 14px/1（blog 10px），radius 6px。
+Purpose：导航认证和 CTA。Anatomy：单行文字 anchor/button。Variants：outline secondary（透明，`border-control`）；filled primary/登录（`action-primary` 背景、白色文字）；深色区 secondary（浅边界+反白）。Sizes：nav desktop minimum 40px、padding `8px 16px`；blog CTA 38px、`10px 16px`。Tokens：`mono` 14px/1（blog 10px），radius 6px。
 
 真实 States：normal 与 menu 内满宽；无 disabled/loader；无 CSS hover/focus rule。Accessibility：保留真实 `<a>` 用于导航、`button` 用于动作；键盘 focus 依赖浏览器 outline，实施新样式时 MUST 用可见 `:focus-visible` 替代且不得移除。Forbidden：不要把所有按钮变 pill，不要将主色用于正文链接。
 
@@ -246,7 +249,7 @@ Footer Purpose：全站收口和链接。深色 `surface-inverse`，三栏链接
   color: #f2faff;
 }
 .course-search__input:focus {
-  border-color: #7fc8ff;
+  border-color: #2563eb;
 }
 @media (max-width: 767px) {
   .filter {

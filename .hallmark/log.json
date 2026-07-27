@@ -1,0 +1,18 @@
+[
+  {
+    "date": "2026-07-27",
+    "scope": "public-pages",
+    "macrostructure": "Workbench",
+    "theme": "existing LAWSON ice-blue system",
+    "enrichment": "existing project covers only",
+    "brief": "LAWSON public pages except homepage tag-filter redesign"
+  },
+  {
+    "date": "2026-07-27",
+    "scope": "page",
+    "macrostructure": "Ecosystem Index",
+    "theme": "Cobalt",
+    "enrichment": "existing RiverHero + topic ticker",
+    "brief": "LAWSON public homepage technical catalogue redesign"
+  }
+]

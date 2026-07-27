@@ -9,9 +9,9 @@ test("访客可按周和主题浏览已发布精选项目详情", async ({ page 
   await expect(page.getByText("2026-W30", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "2026-W30", exact: true }).click();
   await expect(page).toHaveURL(/\?week=2026-W30$/);
-  await expect(page.getByText("当前筛选：2026-W30 · 全部主题")).toBeVisible();
+  await expect(page.getByText("当前筛选：2026-W30 · 全部标签")).toBeVisible();
   await page.getByRole("link", { name: "AI 系统", exact: true }).click();
-  await expect(page).toHaveURL(/\?topic=ai-systems$/);
+  await expect(page).toHaveURL(/\?week=2026-W30&tag=ai-systems$/);
   await page.getByRole("link", { name: "LangChain", exact: true }).click();
 
   await expect(
@@ -27,6 +27,30 @@ test("访客可按周和主题浏览已发布精选项目详情", async ({ page 
     "href",
     /\/zh-CN\/curated\/langchain$/,
   );
+});
+
+test("精选项目兼容旧 topic 参数，并支持 tag 清除、空态和详情回链", async ({
+  page,
+}) => {
+  await page.goto("/zh-CN/curated?topic=ai-systems");
+  await expect(page).toHaveURL(/\?topic=ai-systems$/);
+  await expect(page.getByText("当前筛选：全部周 · ai-systems")).toBeVisible();
+
+  await page
+    .getByRole("navigation", { name: "精选项目标签" })
+    .getByRole("link", { name: "全部", exact: true })
+    .click();
+  await expect(page).toHaveURL("/zh-CN/curated");
+
+  await page.goto("/zh-CN/curated?tag=not-a-real-tag");
+  await expect(page.getByText("没有匹配内容。")).toBeVisible();
+
+  await page.goto("/zh-CN/curated/langchain");
+  await page
+    .getByRole("link", { name: "AI 系统", exact: true })
+    .first()
+    .click();
+  await expect(page).toHaveURL("/zh-CN/curated?tag=ai-systems");
 });
 
 test("访客不能写入精选项目", async ({ request }) => {

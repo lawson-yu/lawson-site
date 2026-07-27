@@ -55,6 +55,24 @@ function searchHref(
   return `/${locale}/search?${params.toString()}`;
 }
 
+function resultDetailHref(
+  locale: string,
+  kind: SearchableContentKind,
+  slug: string,
+) {
+  return `/${locale}/${kind === "blog" ? "blog" : kind === "project" ? "projects" : "curated"}/${slug}`;
+}
+
+function resultTagHref(
+  locale: string,
+  kind: SearchableContentKind,
+  slug: string,
+) {
+  const owner =
+    kind === "blog" ? "blog" : kind === "project" ? "projects" : "curated";
+  return `/${locale}/${owner}?tag=${encodeURIComponent(slug)}`;
+}
+
 async function SearchContent({ params, searchParams }: SearchPageProps) {
   await connection();
   const [{ locale }, { cursor: cursorParam, kind: kindParam, q: queryParam }] =
@@ -71,15 +89,20 @@ async function SearchContent({ params, searchParams }: SearchPageProps) {
   return (
     <main className="bg-canvas text-ink min-h-screen" lang={locale}>
       <section className="max-w-site mx-auto px-4 py-12 min-[992px]:py-18 sm:px-6 lg:px-8">
-        <p className="tracking-eyebrow text-muted font-mono text-xs font-medium">
-          SEARCH
-        </p>
-        <h1 className="mt-3 text-4xl leading-[1.1] font-light tracking-tight min-[992px]:text-6xl sm:text-5xl">
-          搜索
-        </h1>
-        <div className="border-line mt-8 border-t pt-8 min-[992px]:mt-16 min-[992px]:pt-10">
+        <header className="border-line border-t pt-8 min-[992px]:pt-10">
+          <p className="tracking-eyebrow text-muted font-mono text-xs font-medium">
+            SEARCH
+          </p>
+          <h1 className="mt-3 text-4xl leading-[1.05] font-light tracking-tight min-[992px]:text-6xl sm:text-5xl">
+            搜索
+          </h1>
+          <p className="text-muted mt-5 max-w-2xl leading-7">
+            搜索已发布的博客、个人项目和精选项目；结果里的标签会回到所属列表。
+          </p>
+        </header>
+        <div className="border-line mt-10 border-y py-6 min-[992px]:mt-16">
           <form
-            className="flex max-w-3xl flex-col gap-3 min-[768px]:flex-row"
+            className="flex max-w-3xl flex-col gap-3 min-[768px]:flex-row min-[768px]:items-center"
             method="get"
           >
             <input
@@ -93,7 +116,7 @@ async function SearchContent({ params, searchParams }: SearchPageProps) {
             />
             {kind ? <input name="kind" type="hidden" value={kind} /> : null}
             <button
-              className="rounded-control bg-action text-ink min-h-11 px-5 py-3 font-mono text-sm font-medium"
+              className="rounded-control bg-action min-h-11 px-7 py-2 font-mono text-sm font-bold whitespace-nowrap text-white"
               type="submit"
             >
               搜索
@@ -106,7 +129,7 @@ async function SearchContent({ params, searchParams }: SearchPageProps) {
           >
             <Link
               aria-current={!kind ? "page" : undefined}
-              className={`border-line rounded-control border px-3 py-2 font-mono text-xs ${
+              className={`border-line rounded-control border px-4 py-2 font-mono text-xs font-bold tracking-[0.08em] ${
                 !kind
                   ? "bg-brand text-canvas border-brand"
                   : "bg-surface text-muted"
@@ -118,7 +141,7 @@ async function SearchContent({ params, searchParams }: SearchPageProps) {
             {searchableContentKinds.map((item) => (
               <Link
                 aria-current={kind === item ? "page" : undefined}
-                className={`border-line rounded-control border px-3 py-2 font-mono text-xs ${
+                className={`border-line rounded-control border px-4 py-2 font-mono text-xs font-bold tracking-[0.08em] ${
                   kind === item
                     ? "bg-brand text-canvas border-brand"
                     : "bg-surface text-muted"
@@ -152,7 +175,7 @@ async function SearchContent({ params, searchParams }: SearchPageProps) {
               <h2 className="mt-4 text-2xl leading-tight font-light tracking-tight">
                 <Link
                   className="hover:text-muted focus-visible:ring-brand outline-none focus-visible:ring-2"
-                  href={`/${locale}/${result.kind === "blog" ? "blog" : result.kind === "project" ? "projects" : "curated"}/${result.slug}`}
+                  href={resultDetailHref(locale, result.kind, result.slug)}
                 >
                   {result.title}
                 </Link>
@@ -160,12 +183,13 @@ async function SearchContent({ params, searchParams }: SearchPageProps) {
               <p className="text-muted mt-3 leading-6">{result.summary}</p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {result.tags.map((tag) => (
-                  <span
-                    className="border-line text-muted rounded-control bg-surface border px-2.5 py-1 font-mono text-[11px] leading-4"
+                  <Link
+                    className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-[11px] leading-4 focus-visible:ring-2 focus-visible:outline-none"
+                    href={resultTagHref(locale, result.kind, tag.slug)}
                     key={tag.slug}
                   >
                     {tag.label}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </article>

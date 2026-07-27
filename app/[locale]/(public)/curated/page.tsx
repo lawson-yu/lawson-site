@@ -4,13 +4,49 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
+import {
+  ContentFilterBar,
+  type ContentFilterOption,
+} from "@/app/[locale]/(public)/_components/content-filter-bar";
+import { PublicPageHeader } from "@/app/[locale]/(public)/_components/public-page-header";
 import { supportedLocale } from "@/lib/content/catalog";
 import { listPublishedCuratedProjects } from "@/lib/content/curated";
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ topic?: string; week?: string }>;
+  searchParams: Promise<{ tag?: string; topic?: string; week?: string }>;
 };
+
+function curatedHref(locale: string, filters: { tag?: string; week?: string }) {
+  const params = new URLSearchParams();
+  if (filters.week) params.set("week", filters.week);
+  if (filters.tag) params.set("tag", filters.tag);
+  const query = params.toString();
+  return `/${locale}/curated${query ? `?${query}` : ""}`;
+}
+
+function buildCuratedTagOptions(
+  locale: string,
+  projects: Awaited<ReturnType<typeof listPublishedCuratedProjects>>,
+  week?: string,
+): ContentFilterOption[] {
+  const tags = new Map<string, { count: number; label: string }>();
+  for (const project of projects) {
+    for (const tag of project.tags) {
+      const current = tags.get(tag.slug);
+      tags.set(tag.slug, {
+        count: (current?.count ?? 0) + 1,
+        label: current?.label ?? tag.label,
+      });
+    }
+  }
+  return [...tags.entries()].map(([slug, tag]) => ({
+    count: tag.count,
+    href: curatedHref(locale, { tag: slug, week }),
+    label: tag.label,
+    slug,
+  }));
+}
 
 export const metadata: Metadata = {
   alternates: { canonical: "/zh-CN/curated" },
@@ -25,48 +61,56 @@ function CuratedFallback() {
 async function CuratedContent({ params, searchParams }: Props) {
   await connection();
   const { locale } = await params;
-  const { topic, week } = await searchParams;
+  const { tag, topic, week } = await searchParams;
   if (locale !== supportedLocale) notFound();
   const projects = await listPublishedCuratedProjects(locale);
   const weeks = [...new Set(projects.map((project) => project.metadata.week))];
-  const topics = [
-    ...new Map(
-      projects.flatMap((project) =>
-        project.tags.map((tag) => [tag.slug, tag.label]),
-      ),
-    ).entries(),
-  ];
+  const activeTag = tag ?? topic;
+  const tagOptions = buildCuratedTagOptions(locale, projects, week);
   const filteredProjects = projects.filter(
     (project) =>
       (!week || project.metadata.week === week) &&
-      (!topic || project.tags.some((tag) => tag.slug === topic)),
+      (!activeTag || project.tags.some((tag) => tag.slug === activeTag)),
   );
   return (
     <main className="bg-canvas text-ink min-h-screen" lang={locale}>
       <section className="max-w-site mx-auto px-4 py-12 min-[992px]:py-18 sm:px-6 lg:px-8">
-        <p className="tracking-eyebrow text-muted font-mono text-xs font-medium">
-          CURATED REPOSITORIES
-        </p>
-        <h1 className="mt-3 text-4xl leading-[1.1] font-light tracking-tight min-[992px]:text-6xl sm:text-5xl">
-          精选项目
-        </h1>
-        <p className="text-muted mt-4 max-w-2xl text-base leading-7">
-          按主题与收录周整理值得关注的 GitHub
-          项目，并记录它们解决的问题和适用场景。
-        </p>
-        <dl className="border-line mt-10 grid gap-6 border-y py-6 min-[992px]:mt-16 min-[992px]:grid-cols-[auto_1fr] min-[992px]:items-start">
+        <PublicPageHeader
+          description="按主题与收录周整理值得关注的 GitHub 项目，并记录它们解决的问题和适用场景。"
+          eyebrow="CURATED REPOSITORIES"
+          title="精选项目"
+        >
+          <p className="text-muted font-mono text-xs leading-6">
+            {filteredProjects.length} / {projects.length} 个精选显示
+          </p>
+        </PublicPageHeader>
+
+        <dl className="mt-10 grid gap-5 min-[992px]:mt-16">
           <div>
-            <dt className="text-muted font-mono text-xs">按周</dt>
+            <dt className="text-muted font-mono text-xs font-bold tracking-[0.12em]">
+              WEEKS
+            </dt>
             <dd className="mt-3 flex flex-wrap gap-2">
+              <Link
+                aria-current={!week ? "page" : undefined}
+                className={`border-line rounded-control border px-4 py-2 font-mono text-xs font-bold tracking-[0.08em] ${
+                  !week
+                    ? "bg-brand text-canvas border-brand"
+                    : "bg-surface text-muted"
+                }`}
+                href={curatedHref(locale, { tag: activeTag })}
+              >
+                全部
+              </Link>
               {weeks.map((item) => (
                 <Link
                   aria-current={week === item ? "page" : undefined}
-                  className={`border-line rounded-control border px-3 py-2 font-mono text-xs ${
+                  className={`border-line rounded-control border px-4 py-2 font-mono text-xs font-bold tracking-[0.08em] ${
                     week === item
                       ? "bg-brand text-canvas border-brand"
                       : "bg-surface text-muted"
                   }`}
-                  href={`/${locale}/curated?week=${encodeURIComponent(item)}`}
+                  href={curatedHref(locale, { tag: activeTag, week: item })}
                   key={item}
                 >
                   {item}
@@ -77,41 +121,39 @@ async function CuratedContent({ params, searchParams }: Props) {
               ) : null}
             </dd>
           </div>
-          <div>
-            <dt className="text-muted font-mono text-xs">按主题</dt>
-            <dd className="mt-3 flex flex-wrap gap-2">
-              {topics.map(([slug, label]) => (
-                <Link
-                  aria-current={topic === slug ? "page" : undefined}
-                  className={`border-line rounded-control border px-3 py-2 font-mono text-xs ${
-                    topic === slug
-                      ? "bg-brand text-canvas border-brand"
-                      : "bg-surface text-muted"
-                  }`}
-                  href={`/${locale}/curated?topic=${encodeURIComponent(slug)}`}
-                  key={slug}
-                >
-                  {label}
-                </Link>
-              ))}
-              {!topics.length ? (
-                <span className="text-muted">暂无主题</span>
-              ) : null}
-            </dd>
-          </div>
         </dl>
-        {week || topic ? (
-          <p className="text-muted mt-6 font-mono text-xs">
-            当前筛选：{week ?? "全部周"} · {topic ?? "全部主题"}
-          </p>
-        ) : null}
-        <div className="mt-10 grid gap-x-10 gap-y-10 min-[768px]:grid-cols-2 min-[992px]:mt-16 min-[992px]:grid-cols-3 min-[992px]:gap-y-16">
+
+        <div className="mt-8">
+          <ContentFilterBar
+            activeSlug={activeTag}
+            allHref={curatedHref(locale, { week })}
+            ariaLabel="精选项目标签"
+            options={tagOptions}
+          />
+        </div>
+
+        <p className="text-muted mt-6 font-mono text-xs">
+          当前筛选：{week ?? "全部周"} · {activeTag ?? "全部标签"}
+        </p>
+
+        <div className="mt-10 grid gap-8 min-[768px]:grid-cols-2 min-[992px]:mt-16 min-[992px]:grid-cols-3">
           {filteredProjects.map((project) => (
-            <article className="border-line border-t pt-5" key={project.slug}>
-              <p className="text-muted font-mono text-xs">
-                {project.metadata.week} · 收录于 {project.metadata.collectedAt}
-              </p>
-              <h2 className="mt-4 text-2xl leading-tight font-light tracking-tight">
+            <article
+              className="border-line bg-surface-raised flex min-h-full flex-col border-t p-6 sm:p-8"
+              key={project.slug}
+            >
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <Link
+                    className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-[11px] leading-4 focus-visible:ring-2 focus-visible:outline-none"
+                    href={curatedHref(locale, { tag: tag.slug, week })}
+                    key={tag.id}
+                  >
+                    {tag.label}
+                  </Link>
+                ))}
+              </div>
+              <h2 className="mt-8 text-3xl leading-tight font-semibold tracking-[-0.035em] [overflow-wrap:anywhere]">
                 <Link
                   className="hover:text-muted focus-visible:ring-brand outline-none focus-visible:ring-2"
                   href={`/${locale}/curated/${project.slug}`}
@@ -123,20 +165,21 @@ async function CuratedContent({ params, searchParams }: Props) {
               <p className="text-muted mt-4 text-sm leading-6">
                 解决问题：{project.metadata.problem}
               </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    className="border-line text-muted rounded-control bg-surface border px-2.5 py-1 font-mono text-[11px] leading-4"
-                    key={tag.id}
-                  >
-                    {tag.label}
-                  </span>
-                ))}
-              </div>
+              <p className="text-muted mt-auto pt-8 font-mono text-xs">
+                {project.metadata.week} · 收录于 {project.metadata.collectedAt}
+              </p>
             </article>
           ))}
           {!filteredProjects.length ? (
-            <p className="text-muted">没有符合条件的精选项目。</p>
+            <p className="text-muted border-line border-t py-10 min-[768px]:col-span-2 min-[992px]:col-span-3">
+              没有匹配内容。
+              <Link
+                className="underline underline-offset-4"
+                href={`/${locale}/curated`}
+              >
+                全部
+              </Link>
+            </p>
           ) : null}
         </div>
       </section>

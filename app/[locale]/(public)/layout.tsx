@@ -9,11 +9,11 @@ export default function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="bg-canvas text-ink min-h-screen overflow-x-hidden">
-      <header className="border-line bg-canvas sticky top-0 z-50 border-b">
-        <div className="max-w-site relative mx-auto flex min-h-16 items-center justify-between gap-x-4 px-4 sm:px-6 lg:px-8">
+    <div className="bg-canvas text-ink min-h-screen overflow-x-clip">
+      <header className="fixed inset-x-0 top-3 z-50 px-3 sm:px-6">
+        <div className="bg-canvas/54 max-w-site shadow-floating-header ring-header-ring relative mx-auto flex min-h-16 items-center justify-between gap-x-4 rounded-[var(--radius-control)] px-4 font-mono ring-1 backdrop-blur-2xl sm:px-5 lg:px-6">
           <Link
-            className="focus-visible:ring-brand tracking-eyebrow text-brand focus-visible:ring-offset-canvas min-h-11 py-3 text-sm font-extrabold outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
+            className="focus-visible:ring-brand tracking-eyebrow text-brand focus-visible:ring-offset-canvas relative z-10 min-h-11 py-3 text-sm font-extrabold outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
             href={`/${supportedLocale}`}
           >
             LAWSON
@@ -21,7 +21,7 @@ export default function PublicLayout({
           <PublicNavigation locale={supportedLocale} />
         </div>
       </header>
-      {children}
+      <div className="pt-20 sm:pt-24">{children}</div>
       <footer className="bg-inverse text-inverse-ink">
         <div className="max-w-site mx-auto grid gap-8 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:px-8">
           <div>

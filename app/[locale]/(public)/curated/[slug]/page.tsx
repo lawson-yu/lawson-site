@@ -81,12 +81,13 @@ async function CuratedDetailContent({ params }: Props) {
             <dt className="font-bold">主题</dt>
             <dd className="mt-3 flex flex-wrap gap-2">
               {project.tags.map((tag) => (
-                <span
-                  className="border-line rounded-md border px-3 py-1 text-sm"
+                <Link
+                  className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-xs font-bold focus-visible:ring-2 focus-visible:outline-none"
+                  href={`/${locale}/curated?tag=${encodeURIComponent(tag.slug)}`}
                   key={tag.id}
                 >
                   {tag.label}
-                </span>
+                </Link>
               ))}
             </dd>
           </div>

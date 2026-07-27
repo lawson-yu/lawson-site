@@ -1,15 +1,30 @@
+/* Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V4
+ * Hallmark · genre: editorial · macrostructure: Workbench · theme: existing LAWSON ice-blue system
+ * scope: public pages except homepage · enrichment: existing project covers only
+ */
 @import "tailwindcss";
 
 @theme inline {
-  --color-accent: #7fc8ff;
-  --color-action: #7fc8ff;
+  --font-body:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-display:
+    "SF Pro Display", "Aptos Display", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --color-accent: #2563eb;
+  --color-action: #2563eb;
   --color-brand: #161f34;
   --color-canvas: #f2faff;
   --color-ink: #030710;
   --color-inverse: #030710;
   --color-inverse-ink: #cce9ff;
   --color-line: #cce9ff;
-  --color-muted: #40668d;
+  --color-muted: #475569;
+  --color-header-ring: rgb(255 255 255 / 35%);
+  --color-river-deep: #0f7fae;
+  --color-river-highlight: rgb(125 211 252 / 32%);
+  --color-river-shimmer: rgb(255 255 255 / 72%);
   --color-surface: #e5f4ff;
   --color-surface-raised: #f2faff;
   --container-reading: 720px;
@@ -17,6 +32,9 @@
   --tracking-eyebrow: 0.16em;
   --radius-control: 6px;
   --radius-media: 12px;
+  --shadow-floating-header: 0 18px 48px rgb(3 7 16 / 8%);
+  --duration-ticker: 36s;
+  --ease-ticker: linear;
 }
 
 @layer base {
@@ -26,11 +44,14 @@
 
   body {
     margin: 0;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-      "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-family: var(--font-body);
     background: var(--color-canvas);
     color: var(--color-ink);
+    overflow-x: clip;
+  }
+
+  html {
+    overflow-x: clip;
   }
 
   :focus-visible {
@@ -54,9 +75,77 @@
   }
 }
 
+.home-display-shadow {
+  isolation: isolate;
+  position: relative;
+}
+
+.home-display-shadow::after {
+  color: var(--color-line);
+  content: attr(data-shadow);
+  inset: 0 auto auto 0;
+  position: absolute;
+  transform: translate(0.1em, 0.1em);
+  white-space: nowrap;
+  z-index: -1;
+}
+
+.home-topic-ticker__track {
+  animation: home-topic-ticker var(--duration-ticker) var(--ease-ticker)
+    infinite;
+  display: flex;
+  width: max-content;
+}
+
+.home-topic-ticker__group {
+  align-items: center;
+  display: flex;
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  gap: 0;
+  letter-spacing: 0.16em;
+  padding-inline-end: 1.75rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.home-topic-ticker__group span::after {
+  color: var(--color-accent);
+  content: " /";
+  margin-inline: 1.75rem;
+}
+
+@keyframes home-topic-ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .home-hero {
     animation: home-enter 500ms ease-out both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-topic-ticker__track {
+    animation: none;
+    width: 100%;
+  }
+
+  .home-topic-ticker__group {
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+    white-space: normal;
+  }
+
+  .home-topic-ticker__group span:nth-child(n + 6) {
+    display: none;
+  }
+
+  .home-topic-ticker__group + .home-topic-ticker__group {
+    display: none;
   }
 }
 

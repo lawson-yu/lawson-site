@@ -1,0 +1,9 @@
+{
+  "date": "2026-07-27",
+  "framework": "Next.js App Router",
+  "fontStack": "system sans with existing mono utility",
+  "palette": "Tailwind v4 named color tokens from app/globals.css",
+  "motion": "motion package installed; existing RiverHero owns ambient motion",
+  "spacing": "Tailwind spacing utilities",
+  "preserve": ["existing tokens", "RiverHero", "route and data boundaries"]
+}

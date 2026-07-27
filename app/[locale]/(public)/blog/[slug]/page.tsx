@@ -85,13 +85,11 @@ async function BlogDetailContent({ params }: BlogDetailPageProps) {
         </div>
         <div className="mt-6 flex flex-wrap gap-2">
           {blog.tags.map((tag) => (
-            <Link
-              className="border-line text-accent rounded-md border px-3 py-1 text-xs font-semibold"
+            <TagLink
               href={`/${locale}/blog?tag=${encodeURIComponent(tag.slug)}`}
               key={tag.slug}
-            >
-              {tag.label}
-            </Link>
+              label={tag.label}
+            />
           ))}
         </div>
         <div className="border-line mt-12 border-t pt-2">
@@ -104,6 +102,17 @@ async function BlogDetailContent({ params }: BlogDetailPageProps) {
         type="application/ld+json"
       />
     </main>
+  );
+}
+
+function TagLink({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-xs font-bold focus-visible:ring-2 focus-visible:outline-none"
+      href={href}
+    >
+      {label}
+    </Link>
   );
 }
 

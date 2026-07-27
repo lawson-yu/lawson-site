@@ -83,11 +83,36 @@ async function ProjectDetailContent({ params }: Props) {
             </dd>
           </div>
           <div>
+            <dt className="font-bold">标签</dt>
+            <dd className="mt-3 flex flex-wrap gap-2">
+              {(project.tags.length
+                ? project.tags.map((item) => ({
+                    key: item.id,
+                    label: item.label,
+                    slug: item.slug,
+                  }))
+                : project.metadata.techStack.map((item) => ({
+                    key: item,
+                    label: item,
+                    slug: item,
+                  }))
+              ).map((tag) => (
+                <Link
+                  className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-xs font-bold focus-visible:ring-2 focus-visible:outline-none"
+                  href={`/${locale}/projects?tag=${encodeURIComponent(tag.slug)}`}
+                  key={tag.key}
+                >
+                  {tag.label}
+                </Link>
+              ))}
+            </dd>
+          </div>
+          <div>
             <dt className="font-bold">技术栈</dt>
             <dd className="mt-3 flex flex-wrap gap-2">
               {project.metadata.techStack.map((item) => (
                 <span
-                  className="border-line rounded-md border px-3 py-1 text-sm"
+                  className="border-line text-muted rounded-control border px-3 py-1.5 font-mono text-xs"
                   key={item}
                 >
                   {item}

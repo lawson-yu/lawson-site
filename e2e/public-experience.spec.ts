@@ -103,6 +103,34 @@ test("公开导航、联系入口和 SEO 文档可访问", async ({ page, reques
   );
 });
 
+test("博客标签可筛选、清除、空态，并从详情回到筛选", async ({ page }) => {
+  await page.goto("/zh-CN/blog");
+
+  const firstTag = page
+    .getByRole("navigation", { name: "博客标签" })
+    .getByRole("link")
+    .nth(1);
+  const tagLabel = (await firstTag.textContent())?.replace(/\d+$/, "").trim();
+  expect(tagLabel).toBeTruthy();
+
+  await firstTag.click();
+  await expect(page).toHaveURL(/\?tag=/);
+  await expect(
+    page.getByRole("link", { name: tagLabel!, exact: true }).first(),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "全部", exact: true }).click();
+  await expect(page).toHaveURL("/zh-CN/blog");
+
+  await page.goto("/zh-CN/blog?tag=not-a-real-tag");
+  await expect(page.getByText("没有匹配内容。")).toBeVisible();
+
+  await page.goto("/zh-CN/blog/personal-site-foundation");
+  const detailTag = page.locator("article").getByRole("link").first();
+  await expect(detailTag).toBeVisible();
+  await detailTag.click();
+  await expect(page).toHaveURL(/\?tag=/);
+});
+
 test("小屏公开导航可由键盘展开并访问既有链接", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/zh-CN/about");

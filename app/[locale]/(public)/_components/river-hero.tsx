@@ -1,189 +1,136 @@
 "use client";
 
+import { motion, useReducedMotion } from "motion/react";
+import type { TargetAndTransition } from "motion/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-
-const RIPPLE_DURATION_MS = 800;
-const RIPPLE_INTERVAL_MS = 110;
-const MAX_RIPPLES = 2;
-
-type Ripple = { startedAt: number; x: number; y: number };
 
 function RiverRipples() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ripplesRef = useRef<Ripple[]>([]);
-  const animationFrameRef = useRef<number | null>(null);
-  const drawRef = useRef<(timestamp: number) => void>(null);
-  const lastRippleAtRef = useRef(0);
-  const reducedMotionRef = useRef(false);
-  const [rippleState, setRippleState] = useState<"active" | "idle">("idle");
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const context = canvas.getContext("2d");
-    if (!context) return;
-
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const coarsePointer = window.matchMedia("(pointer: coarse)");
-    let autoRippleTimer: number | null = null;
-    const stopAutoRipples = () => {
-      if (autoRippleTimer !== null) {
-        window.clearInterval(autoRippleTimer);
-        autoRippleTimer = null;
-      }
-    };
-    const startAutoRipples = () => {
-      stopAutoRipples();
-      if (reducedMotion.matches || !coarsePointer.matches) return;
-      autoRippleTimer = window.setInterval(() => {
-        const bounds = canvas.getBoundingClientRect();
-        const timestamp = performance.now();
-        ripplesRef.current = [
-          ...ripplesRef.current.slice(-(MAX_RIPPLES - 1)),
-          {
-            startedAt: timestamp,
-            x: bounds.width * 0.52,
-            y: bounds.height * 0.6,
-          },
-        ];
-        setRippleState("active");
-        if (animationFrameRef.current === null && drawRef.current) {
-          animationFrameRef.current = window.requestAnimationFrame(
-            drawRef.current,
-          );
-        }
-      }, 5_000);
-    };
-    const syncMotionPreference = () => {
-      reducedMotionRef.current = reducedMotion.matches;
-      if (reducedMotion.matches) {
-        ripplesRef.current = [];
-        setRippleState("idle");
-        if (animationFrameRef.current !== null) {
-          window.cancelAnimationFrame(animationFrameRef.current);
-          animationFrameRef.current = null;
-        }
-        context.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      startAutoRipples();
-    };
-    const resize = () => {
-      const { height, width } = canvas.getBoundingClientRect();
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(width * pixelRatio);
-      canvas.height = Math.round(height * pixelRatio);
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    };
-    const observer = new ResizeObserver(resize);
-
-    resize();
-    syncMotionPreference();
-    observer.observe(canvas);
-    reducedMotion.addEventListener("change", syncMotionPreference);
-    coarsePointer.addEventListener("change", startAutoRipples);
-
-    return () => {
-      observer.disconnect();
-      reducedMotion.removeEventListener("change", syncMotionPreference);
-      coarsePointer.removeEventListener("change", startAutoRipples);
-      stopAutoRipples();
-      if (animationFrameRef.current !== null) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, []);
-
-  const draw = (timestamp: number) => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-
-    const { height, width } = canvas.getBoundingClientRect();
-    context.clearRect(0, 0, width, height);
-    ripplesRef.current = ripplesRef.current.filter(
-      (ripple) => timestamp - ripple.startedAt < RIPPLE_DURATION_MS,
-    );
-
-    for (const ripple of ripplesRef.current) {
-      const progress = (timestamp - ripple.startedAt) / RIPPLE_DURATION_MS;
-      const radius = 20 + progress * 90;
-      context.save();
-      context.globalAlpha = (1 - progress) * 0.52;
-      context.strokeStyle = "#e4f5ff";
-      context.lineWidth = 1.4 - progress * 0.45;
-      context.beginPath();
-      context.ellipse(
-        ripple.x,
-        ripple.y,
-        radius,
-        radius * 0.36,
-        -0.12,
-        0,
-        Math.PI * 2,
-      );
-      context.stroke();
-      context.restore();
-    }
-
-    if (ripplesRef.current.length) {
-      animationFrameRef.current = window.requestAnimationFrame(draw);
-      return;
-    }
-    animationFrameRef.current = null;
-    setRippleState("idle");
-  };
-  useEffect(() => {
-    drawRef.current = draw;
-  });
-
-  const addRipple = (event: React.PointerEvent<HTMLCanvasElement>) => {
-    if (reducedMotionRef.current || event.pointerType === "touch") return;
-
-    const timestamp = performance.now();
-    if (timestamp - lastRippleAtRef.current < RIPPLE_INTERVAL_MS) return;
-
-    const bounds = event.currentTarget.getBoundingClientRect();
-    lastRippleAtRef.current = timestamp;
-    ripplesRef.current = [
-      ...ripplesRef.current.slice(-(MAX_RIPPLES - 1)),
-      {
-        startedAt: timestamp,
-        x: event.clientX - bounds.left,
-        y: event.clientY - bounds.top,
-      },
-    ];
-    setRippleState("active");
-    if (animationFrameRef.current === null) {
-      animationFrameRef.current = window.requestAnimationFrame(draw);
-    }
-  };
+  const prefersReducedMotion = useReducedMotion();
+  const activeAnimation: TargetAndTransition | undefined = prefersReducedMotion
+    ? undefined
+    : {
+        filter: "saturate(1.14) brightness(1.08)",
+        y: -3,
+        transition: { duration: 0.45, ease: "easeOut" },
+      };
 
   return (
-    <div
+    <motion.div
       aria-label="浅色河流"
-      className="absolute bottom-[-4%] left-1/2 z-20 aspect-[1304/293] w-[min(92vw,420px)] -translate-x-1/2 transition-transform duration-200 ease-out motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:right-[-8%] sm:left-auto sm:w-[min(72vw,600px)] sm:translate-x-0 lg:right-[-6%] lg:bottom-[-16%] lg:w-[min(56vw,744px)] lg:hover:-translate-y-1"
-      data-ripple-state={rippleState}
+      className="absolute bottom-[2%] left-[56%] z-20 aspect-[1304/293] w-[min(92vw,420px)] -translate-x-1/2 cursor-default sm:right-[-4%] sm:bottom-[2%] sm:left-auto sm:w-[min(72vw,600px)] sm:translate-x-0 lg:right-[-2%] lg:bottom-[-8%] lg:w-[min(56vw,744px)]"
       data-river-surface
       role="img"
+      whileHover={activeAnimation}
     >
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-x-[-4%] top-[-28%] bottom-[-10%] z-30 cursor-default"
+        whileHover={activeAnimation}
+      />
       <Image
         alt=""
         aria-hidden="true"
-        className="pointer-events-none object-contain"
+        className="pointer-events-none z-0 object-contain"
         fill
         sizes="(min-width: 1024px) 56vw, (min-width: 640px) 72vw, 92vw"
         src="/images/hero-river-transparent-v3.png"
         unoptimized
       />
-      <canvas
+      <div
         aria-hidden="true"
-        className="relative z-10 h-full w-full cursor-crosshair"
-        onPointerMove={addRipple}
-        ref={canvasRef}
-      />
-    </div>
+        className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
+      >
+        <motion.span
+          animate={
+            prefersReducedMotion
+              ? { opacity: 0 }
+              : {
+                  opacity: [0.18, 0.34, 0.22],
+                  scaleX: [1, 1.025, 0.995],
+                  x: ["-1.4%", "1.8%", "-0.6%"],
+                  y: ["0.6%", "-1%", "0.2%"],
+                }
+          }
+          className="absolute inset-0"
+          transition={{
+            duration: 3.8,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
+        >
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none object-contain brightness-110 saturate-125"
+            fill
+            sizes="(min-width: 1024px) 56vw, (min-width: 640px) 72vw, 92vw"
+            src="/images/hero-river-transparent-v3.png"
+            unoptimized
+          />
+        </motion.span>
+        <motion.span
+          animate={
+            prefersReducedMotion
+              ? undefined
+              : {
+                  opacity: [0.12, 0.26, 0.16],
+                  scaleY: [1, 0.985, 1.02],
+                  x: ["2%", "-1.2%", "0.8%"],
+                  y: ["-1.4%", "0.8%", "-0.2%"],
+                }
+          }
+          className="absolute inset-0 blur-[1.2px]"
+          transition={{
+            duration: 4.5,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
+        >
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none object-contain brightness-125 saturate-150"
+            fill
+            sizes="(min-width: 1024px) 56vw, (min-width: 640px) 72vw, 92vw"
+            src="/images/hero-river-transparent-v3.png"
+            unoptimized
+          />
+        </motion.span>
+        <motion.span
+          animate={
+            prefersReducedMotion
+              ? undefined
+              : {
+                  opacity: [0.1, 0.22, 0.14],
+                  x: ["-22%", "28%", "-12%"],
+                }
+          }
+          className="absolute top-[24%] left-[4%] h-16 w-[88%] rounded-[50%] bg-[linear-gradient(90deg,transparent,var(--color-river-shimmer),var(--color-river-highlight),transparent)] blur-[12px]"
+          transition={{
+            duration: 4.2,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
+        />
+        <motion.span
+          animate={
+            prefersReducedMotion
+              ? undefined
+              : { opacity: [0.18, 0.32, 0.2], scaleX: [0.96, 1.06, 1] }
+          }
+          className="bg-river-deep/22 absolute inset-x-[12%] top-[34%] h-16 rounded-[50%] blur-[14px]"
+          transition={{
+            duration: 4,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
+        />
+      </div>
+    </motion.div>
   );
 }
 export function RiverHero() {
@@ -208,7 +155,7 @@ export function RiverHero() {
       <div className="max-w-site relative mx-auto flex h-full items-start px-4 pt-20 sm:px-6 sm:pt-28 lg:px-8 lg:pt-36">
         <h1
           aria-label="LAWSON — AI 与工程实践"
-          className="text-ink max-w-sm text-4xl leading-[0.9] font-black tracking-[-0.06em] sm:text-6xl lg:text-7xl"
+          className="font-display text-ink max-w-sm text-4xl leading-[0.9] font-black tracking-[-0.06em] sm:text-6xl lg:text-7xl"
           id="river-hero-title"
         >
           <span className="block">LAWSON</span>
