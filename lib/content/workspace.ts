@@ -92,11 +92,10 @@ export async function listWorkspaceBlogsPage(
   authorId: string,
   page: number,
   pageSize: number,
+  state?: "draft" | "published",
 ) {
   const start = (page - 1) * pageSize;
-  const { data, error, count } = await (
-    await createClient()
-  )
+  let query = (await createClient())
     .from("content_variants")
     .select(
       "id, content_item_id, locale, state, slug, title, summary, body_markdown, published_at, updated_at, content_items!inner(author_id, kind), content_tags(tags(id, label, slug, state))",
@@ -104,8 +103,11 @@ export async function listWorkspaceBlogsPage(
     )
     .eq("content_items.author_id", authorId)
     .eq("content_items.kind", "blog")
-    .order("updated_at", { ascending: false })
-    .range(start, start + pageSize - 1);
+    .order("updated_at", { ascending: false });
+
+  if (state) query = query.eq("state", state);
+
+  const { data, error, count } = await query.range(start, start + pageSize - 1);
 
   if (error) throw new WorkspaceError("无法读取作者博客");
 

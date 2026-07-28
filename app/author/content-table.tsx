@@ -4,6 +4,8 @@ import { Fragment } from "react";
 import { Eye, Plus } from "lucide-react";
 
 import { getContentPageCount } from "./pagination";
+import { ContentFilters } from "./content-filters";
+import type { ContentState } from "./pagination";
 import { Badge } from "@/components/ui/badge";
 import {
   Pagination,
@@ -35,6 +37,7 @@ export function ContentTable({
   contentBase,
   items,
   page,
+  state,
   title,
   total,
 }: {
@@ -42,6 +45,7 @@ export function ContentTable({
   contentBase: string;
   items: ContentItem[];
   page: number;
+  state: ContentState | undefined;
   title: string;
   total: number;
 }) {
@@ -50,6 +54,11 @@ export function ContentTable({
     (value, index, values) =>
       value > 0 && value <= totalPages && values.indexOf(value) === index,
   );
+  const pageHref = (targetPage: number) => {
+    const params = new URLSearchParams({ page: String(targetPage) });
+    if (state) params.set("state", state);
+    return `${contentBase}?${params}`;
+  };
 
   return (
     <main>
@@ -74,6 +83,7 @@ export function ContentTable({
             新建{title}
           </Link>
         </header>
+        <ContentFilters state={state} />
         <div className="border-line mt-8 overflow-x-auto rounded-md border">
           <Table>
             <caption className="sr-only">{title}内容列表</caption>
@@ -127,9 +137,7 @@ export function ContentTable({
             <PaginationContent>
               {page > 1 ? (
                 <PaginationItem>
-                  <PaginationPrevious
-                    href={`${contentBase}?page=${page - 1}`}
-                  />
+                  <PaginationPrevious href={pageHref(page - 1)} />
                 </PaginationItem>
               ) : null}
               {pages.map((value, index) => (
@@ -141,7 +149,7 @@ export function ContentTable({
                   ) : null}
                   <PaginationItem>
                     <PaginationLink
-                      href={`${contentBase}?page=${value}`}
+                      href={pageHref(value)}
                       isActive={value === page}
                     >
                       {value}
@@ -151,7 +159,7 @@ export function ContentTable({
               ))}
               {page < totalPages ? (
                 <PaginationItem>
-                  <PaginationNext href={`${contentBase}?page=${page + 1}`} />
+                  <PaginationNext href={pageHref(page + 1)} />
                 </PaginationItem>
               ) : null}
             </PaginationContent>

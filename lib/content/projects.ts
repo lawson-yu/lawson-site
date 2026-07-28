@@ -115,17 +115,17 @@ export async function listWorkspaceProjectsPage(
   authorId: string,
   page: number,
   pageSize: number,
+  state?: "draft" | "published",
 ) {
   const start = (page - 1) * pageSize;
-  const { data, error, count } = await (
-    await createClient()
-  )
+  let query = (await createClient())
     .from("content_variants")
     .select(projectSelection, { count: "exact" })
     .eq("content_items.author_id", authorId)
     .eq("content_items.kind", "project")
-    .order("updated_at", { ascending: false })
-    .range(start, start + pageSize - 1);
+    .order("updated_at", { ascending: false });
+  if (state) query = query.eq("state", state);
+  const { data, error, count } = await query.range(start, start + pageSize - 1);
   if (error) throw new Error("无法读取作者项目");
   return {
     items: (data as unknown as ProjectRow[]).flatMap((row) => {
