@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { Menu } from "lucide-react";
-import { useSyncExternalStore, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const publicNavigation = [
   ["博客", "blog"],
@@ -12,48 +13,9 @@ const publicNavigation = [
   ["搜索", "search"],
 ] as const;
 
-const pathChangeEvent = "lawson:pathchange";
-
-function getPathname() {
-  return typeof window === "undefined" ? "" : window.location.pathname;
-}
-
-function subscribeToPathname(callback: () => void) {
-  if (typeof window === "undefined") return () => {};
-
-  const originalPushState = window.history.pushState;
-  const originalReplaceState = window.history.replaceState;
-  const notify = () => window.dispatchEvent(new Event(pathChangeEvent));
-
-  window.history.pushState = function pushState(...args) {
-    const result = originalPushState.apply(this, args);
-    notify();
-    return result;
-  };
-  window.history.replaceState = function replaceState(...args) {
-    const result = originalReplaceState.apply(this, args);
-    notify();
-    return result;
-  };
-
-  window.addEventListener(pathChangeEvent, callback);
-  window.addEventListener("popstate", callback);
-
-  return () => {
-    window.history.pushState = originalPushState;
-    window.history.replaceState = originalReplaceState;
-    window.removeEventListener(pathChangeEvent, callback);
-    window.removeEventListener("popstate", callback);
-  };
-}
-
 export function PublicNavigation({ locale }: { locale: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = useSyncExternalStore(
-    subscribeToPathname,
-    getPathname,
-    () => "",
-  );
+  const pathname = usePathname() ?? "";
 
   return (
     <>

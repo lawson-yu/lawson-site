@@ -103,6 +103,22 @@ test("公开导航、联系入口和 SEO 文档可访问", async ({ page, reques
   );
 });
 
+test("公开导航切换不会触发同步更新错误", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  page.on("pageerror", (error) => errors.push(error.message));
+
+  await page.goto("/zh-CN/about");
+  await page.getByRole("link", { name: "博客" }).first().click();
+  await expect(page).toHaveURL("/zh-CN/blog");
+
+  expect(errors).not.toContainEqual(
+    expect.stringContaining("useInsertionEffect must not schedule updates"),
+  );
+});
+
 test("博客标签可筛选、清除、空态，并从详情回到筛选", async ({ page }) => {
   await page.goto("/zh-CN/blog");
 
