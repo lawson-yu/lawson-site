@@ -16,7 +16,7 @@ export function AuthorSidebar({
   active: "blog" | "project" | "curated";
 }) {
   return (
-    <aside className="border-line bg-surface flex min-h-screen w-56 shrink-0 flex-col border-r px-4 py-6">
+    <aside className="border-line bg-surface flex h-dvh w-56 shrink-0 flex-col border-r px-4 py-6">
       <Link
         className="px-3 text-lg font-extrabold tracking-tight"
         href="/author/blog"

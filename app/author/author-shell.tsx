@@ -15,7 +15,7 @@ function activeFromPathname(pathname: string): "blog" | "project" | "curated" {
 export function AuthorShell({ children }: { children: ReactNode }) {
   const active = activeFromPathname(usePathname());
   return (
-    <div className="lg:flex">
+    <div className="flex h-dvh flex-col overflow-hidden lg:flex-row">
       <div className="hidden lg:block">
         <AuthorSidebar active={active} />
       </div>
@@ -44,7 +44,7 @@ export function AuthorShell({ children }: { children: ReactNode }) {
           </Link>
         </nav>
       </header>
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</div>
     </div>
   );
 }

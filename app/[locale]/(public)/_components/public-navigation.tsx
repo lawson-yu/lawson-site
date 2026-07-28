@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Menu } from "lucide-react";
 import { useSyncExternalStore, useState } from "react";
 
 const publicNavigation = [
@@ -59,11 +60,12 @@ export function PublicNavigation({ locale }: { locale: string }) {
       <button
         aria-controls="public-navigation"
         aria-expanded={isOpen}
-        className="border-line/80 bg-surface/70 text-ink focus-visible:ring-brand rounded-control min-h-11 border px-3 py-2 font-mono text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2 min-[992px]:hidden"
+        aria-label="菜单"
+        className="border-line/80 bg-surface/70 text-ink focus-visible:ring-brand rounded-control inline-flex min-h-11 min-w-11 items-center justify-center border p-2 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 min-[992px]:hidden"
         onClick={() => setIsOpen((open) => !open)}
         type="button"
       >
-        菜单
+        <Menu aria-hidden="true" size={24} strokeWidth={2.5} />
       </button>
       <nav
         aria-label="公开导航"

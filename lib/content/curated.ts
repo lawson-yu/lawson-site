@@ -110,6 +110,31 @@ export async function listWorkspaceCuratedProjects(authorId: string) {
   });
 }
 
+export async function listWorkspaceCuratedProjectsPage(
+  authorId: string,
+  page: number,
+  pageSize: number,
+) {
+  const start = (page - 1) * pageSize;
+  const { data, error, count } = await (
+    await createClient()
+  )
+    .from("content_variants")
+    .select(curatedSelection, { count: "exact" })
+    .eq("content_items.author_id", authorId)
+    .eq("content_items.kind", "curated")
+    .order("updated_at", { ascending: false })
+    .range(start, start + pageSize - 1);
+  if (error) throw new Error("无法读取作者精选项目");
+  return {
+    items: (data as unknown as CuratedRow[]).flatMap((row) => {
+      const project = toCuratedProject(row);
+      return project ? [project] : [];
+    }),
+    total: count ?? 0,
+  };
+}
+
 export async function getWorkspaceCuratedProject(authorId: string, id: string) {
   const projects = await listWorkspaceCuratedProjects(authorId);
   return projects.find((project) => project.id === id) ?? null;

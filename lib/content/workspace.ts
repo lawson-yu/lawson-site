@@ -88,6 +88,33 @@ export async function listWorkspaceBlogs(authorId: string) {
   return selectAuthorBlogs(authorId);
 }
 
+export async function listWorkspaceBlogsPage(
+  authorId: string,
+  page: number,
+  pageSize: number,
+) {
+  const start = (page - 1) * pageSize;
+  const { data, error, count } = await (
+    await createClient()
+  )
+    .from("content_variants")
+    .select(
+      "id, content_item_id, locale, state, slug, title, summary, body_markdown, published_at, updated_at, content_items!inner(author_id, kind), content_tags(tags(id, label, slug, state))",
+      { count: "exact" },
+    )
+    .eq("content_items.author_id", authorId)
+    .eq("content_items.kind", "blog")
+    .order("updated_at", { ascending: false })
+    .range(start, start + pageSize - 1);
+
+  if (error) throw new WorkspaceError("无法读取作者博客");
+
+  return {
+    items: (data as unknown as WorkspaceBlogRow[]).map(toWorkspaceBlog),
+    total: count ?? 0,
+  };
+}
+
 export async function getWorkspaceBlog(authorId: string, id: string) {
   const [blog] = await selectAuthorBlogs(authorId, id);
   return blog ?? null;

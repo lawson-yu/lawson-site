@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Eye, Plus } from "lucide-react";
 
+import { getContentPageCount } from "./pagination";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -21,15 +22,21 @@ type ContentItem = {
 
 export function ContentTable({
   createHref,
-  editBase,
+  contentBase,
   items,
+  page,
   title,
+  total,
 }: {
   createHref: string;
-  editBase: string;
+  contentBase: string;
   items: ContentItem[];
+  page: number;
   title: string;
+  total: number;
 }) {
+  const totalPages = getContentPageCount(total);
+
   return (
     <main>
       <section className="min-w-0 px-4 py-8 sm:px-8 lg:px-12">
@@ -70,7 +77,7 @@ export function ContentTable({
                   <TableCell className="min-w-52">
                     <Link
                       className="hover:text-action font-bold underline-offset-4 hover:underline"
-                      href={`${editBase}/${item.id}`}
+                      href={`${contentBase}/${item.id}`}
                     >
                       {item.title}
                     </Link>
@@ -85,7 +92,7 @@ export function ContentTable({
                     <Link
                       aria-label={`预览 ${item.title}`}
                       className="text-muted hover:text-ink inline-flex min-h-11 items-center gap-2 text-sm font-bold"
-                      href={`${editBase}/${item.id}/preview`}
+                      href={`${contentBase}/${item.id}/preview`}
                     >
                       <Eye aria-hidden="true" size={16} />
                       预览
@@ -101,6 +108,40 @@ export function ContentTable({
             </div>
           ) : null}
         </div>
+        {totalPages > 1 ? (
+          <nav
+            aria-label={`${title}分页`}
+            className="mt-6 flex items-center justify-between gap-4"
+          >
+            {page > 1 ? (
+              <Link
+                className="border-line hover:bg-surface rounded-md border px-4 py-2 text-sm font-bold"
+                href={`${contentBase}?page=${page - 1}`}
+              >
+                上一页
+              </Link>
+            ) : (
+              <span className="border-line text-muted rounded-md border px-4 py-2 text-sm font-bold">
+                上一页
+              </span>
+            )}
+            <span className="text-muted text-sm">
+              第 {page} / {totalPages} 页
+            </span>
+            {page < totalPages ? (
+              <Link
+                className="border-line hover:bg-surface rounded-md border px-4 py-2 text-sm font-bold"
+                href={`${contentBase}?page=${page + 1}`}
+              >
+                下一页
+              </Link>
+            ) : (
+              <span className="border-line text-muted rounded-md border px-4 py-2 text-sm font-bold">
+                下一页
+              </span>
+            )}
+          </nav>
+        ) : null}
       </section>
     </main>
   );
