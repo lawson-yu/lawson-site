@@ -7,6 +7,13 @@ test("访客不能进入作者工作区", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "作者登录" })).toBeVisible();
 });
 
+test("访客不能进入待确认标签", async ({ page }) => {
+  await page.goto("/author/tags");
+
+  await expect(page).toHaveURL(/\/auth\/login\?error=unauthorized$/);
+  await expect(page.getByRole("heading", { name: "作者登录" })).toBeVisible();
+});
+
 test("GitHub OAuth 入口使用浏览器导航", async ({ page }) => {
   const loginRequests: Array<{
     headers: Record<string, string>;

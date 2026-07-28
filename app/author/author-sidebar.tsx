@@ -13,7 +13,7 @@ const items = [
 export function AuthorSidebar({
   active,
 }: {
-  active: "blog" | "project" | "curated";
+  active: "blog" | "project" | "curated" | "tags";
 }) {
   return (
     <aside className="border-line bg-surface flex h-dvh w-56 shrink-0 flex-col border-r px-4 py-6">
@@ -46,8 +46,12 @@ export function AuthorSidebar({
       </nav>
       <div className="border-line mt-auto grid gap-3 border-t pt-5">
         <Link
-          className="text-muted hover:text-ink flex min-h-11 items-center gap-3 px-3 text-sm font-bold"
-          href="/author/blog"
+          aria-current={active === "tags" ? "page" : undefined}
+          className={cn(
+            "text-muted hover:text-ink flex min-h-11 items-center gap-3 border-l-2 border-transparent px-3 text-sm font-bold",
+            active === "tags" && "border-action bg-canvas text-ink",
+          )}
+          href="/author/tags"
         >
           <Tags aria-hidden="true" size={17} />
           待确认标签

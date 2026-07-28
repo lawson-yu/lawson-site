@@ -6,9 +6,12 @@ import type { ReactNode } from "react";
 
 import { AuthorSidebar } from "./author-sidebar";
 
-function activeFromPathname(pathname: string): "blog" | "project" | "curated" {
+function activeFromPathname(
+  pathname: string,
+): "blog" | "project" | "curated" | "tags" {
   if (pathname.startsWith("/author/project")) return "project";
   if (pathname.startsWith("/author/curated")) return "curated";
+  if (pathname.startsWith("/author/tags")) return "tags";
   return "blog";
 }
 
@@ -41,6 +44,12 @@ export function AuthorShell({ children }: { children: ReactNode }) {
             href="/author/curated"
           >
             精选
+          </Link>
+          <Link
+            className={active === "tags" ? "text-ink" : "text-muted"}
+            href="/author/tags"
+          >
+            标签
           </Link>
         </nav>
       </header>
