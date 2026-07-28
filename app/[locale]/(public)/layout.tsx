@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { PublicNavigation } from "@/app/[locale]/(public)/_components/public-navigation";
 import { supportedLocale } from "@/lib/content/catalog";
@@ -18,7 +19,9 @@ export default function PublicLayout({
           >
             LAWSON
           </Link>
-          <PublicNavigation locale={supportedLocale} />
+          <Suspense fallback={null}>
+            <PublicNavigation locale={supportedLocale} />
+          </Suspense>
         </div>
       </header>
       <div className="pt-20 sm:pt-24">{children}</div>

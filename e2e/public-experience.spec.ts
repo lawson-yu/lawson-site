@@ -119,6 +119,23 @@ test("公开导航切换不会触发同步更新错误", async ({ page }) => {
   );
 });
 
+test("公开博客页不会阻塞布局渲染", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  page.on("pageerror", (error) => errors.push(error.message));
+
+  await page.goto("/zh-CN/blog");
+  await expect(
+    page.getByRole("heading", { name: "博客", exact: true }),
+  ).toBeVisible();
+
+  expect(errors).not.toContainEqual(
+    expect.stringContaining("Uncached data or `connection()` was accessed"),
+  );
+});
+
 test("博客标签可筛选、清除、空态，并从详情回到筛选", async ({ page }) => {
   await page.goto("/zh-CN/blog");
 
