@@ -18,7 +18,7 @@ function activeFromPathname(
 export function AuthorShell({ children }: { children: ReactNode }) {
   const active = activeFromPathname(usePathname());
   return (
-    <div className="flex h-dvh flex-col overflow-hidden lg:flex-row">
+    <div className="flex h-full flex-col overflow-hidden lg:flex-row">
       <div className="hidden lg:block">
         <AuthorSidebar active={active} />
       </div>
