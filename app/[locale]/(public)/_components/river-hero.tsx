@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import type { TargetAndTransition } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 
 function RiverRipples() {
   const prefersReducedMotion = useReducedMotion();
@@ -133,7 +134,14 @@ function RiverRipples() {
     </motion.div>
   );
 }
-export function RiverHero() {
+type RiverHeroProps = {
+  locale: string;
+  topics: readonly string[];
+};
+
+export function RiverHero({ locale, topics }: RiverHeroProps) {
+  const topicLoop = [...topics, ...topics, ...topics];
+
   return (
     <section
       aria-labelledby="river-hero-title"
@@ -153,16 +161,58 @@ export function RiverHero() {
       <div className="from-canvas via-canvas/35 absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t to-transparent" />
 
       <div className="max-w-site relative mx-auto flex h-full items-start px-4 pt-20 sm:px-6 sm:pt-28 lg:px-8 lg:pt-36">
-        <h1
-          aria-label="LAWSON — AI 与工程实践"
-          className="font-display text-ink max-w-sm text-4xl leading-[0.9] font-black tracking-[-0.06em] sm:text-6xl lg:text-7xl"
-          id="river-hero-title"
-        >
-          <span className="block">LAWSON</span>
-          <span className="text-muted mt-4 block text-sm font-bold tracking-[0.18em] sm:text-base">
-            AI 与工程实践
-          </span>
-        </h1>
+        <div className="relative z-30 max-w-sm lg:max-w-[29rem]">
+          <h1
+            aria-label="LAWSON — AI 与工程实践"
+            className="font-display text-ink text-4xl leading-[0.9] font-black tracking-[-0.06em] sm:text-6xl lg:text-7xl"
+            id="river-hero-title"
+          >
+            <span className="block">LAWSON</span>
+            <span className="text-muted mt-4 block text-sm font-bold tracking-[0.18em] sm:text-base">
+              AI 与工程实践
+            </span>
+          </h1>
+
+          <div className="hidden lg:block">
+            <p className="text-muted mt-7 text-base leading-7">
+              把 AI 工具、工程方法与可验证工作流，沉淀成能复用的实践记录。
+              <br />
+              从一次次真实构建里，整理出可阅读、可运行、可持续维护的系统。
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                className="bg-action text-canvas focus-visible:ring-brand hover:bg-action/85 inline-flex min-h-11 items-center justify-center rounded-[var(--radius-control)] px-4 py-3 font-mono text-xs font-extrabold tracking-[0.1em] transition-colors outline-none focus-visible:ring-2"
+                href={`/${locale}/blog`}
+              >
+                阅读最新文章 →
+              </Link>
+              <Link
+                className="border-line text-ink focus-visible:ring-brand bg-canvas/55 hover:bg-surface-raised inline-flex min-h-11 items-center justify-center rounded-[var(--radius-control)] border px-4 py-3 font-mono text-xs font-extrabold tracking-[0.1em] transition-colors outline-none focus-visible:ring-2"
+                href={`/${locale}/projects`}
+              >
+                查看个人项目 →
+              </Link>
+            </div>
+            <div
+              aria-label="本站主题"
+              className="home-topic-ticker border-line bg-canvas/55 text-brand mt-8 overflow-hidden border px-4 py-2.5"
+            >
+              <p className="sr-only">{topics.join(" · ")}</p>
+              <div className="home-topic-ticker__track" aria-hidden="true">
+                {[0, 1].map((group) => (
+                  <div
+                    className="home-topic-ticker__group font-mono"
+                    key={group}
+                  >
+                    {topicLoop.map((topic, index) => (
+                      <span key={`${topic}-${index}`}>{topic}</span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
 
         <RiverRipples />
         <Image

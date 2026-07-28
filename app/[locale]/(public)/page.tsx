@@ -25,7 +25,6 @@ const topicRail = [
   "个人项目",
   "精选仓库",
 ];
-const topicRailLoop = [...topicRail, ...topicRail, ...topicRail];
 
 export const metadata: Metadata = {
   alternates: { canonical: "/zh-CN" },
@@ -68,27 +67,11 @@ async function HomeContent({ params }: HomePageProps) {
 
   return (
     <main lang={locale}>
-      <RiverHero />
+      <RiverHero locale={locale} topics={topicRail} />
 
       <section className="border-line bg-surface border-y">
-        <div className="max-w-site mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-          <div
-            aria-label="本站主题"
-            className="home-topic-ticker border-line bg-surface-raised text-brand overflow-hidden border px-4 py-3 sm:px-6"
-          >
-            <p className="sr-only">{topicRail.join(" · ")}</p>
-            <div className="home-topic-ticker__track" aria-hidden="true">
-              {[0, 1].map((group) => (
-                <div className="home-topic-ticker__group font-mono" key={group}>
-                  {topicRailLoop.map((topic, index) => (
-                    <span key={`${topic}-${index}`}>{topic}</span>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-12 grid gap-12 lg:mt-20 lg:grid-cols-[minmax(0,1fr)_minmax(15rem,0.42fr)] lg:gap-20">
+        <div className="max-w-site mx-auto px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(15rem,0.42fr)] lg:gap-20">
             <div className="min-w-0">
               <div className="border-line flex items-end justify-between gap-4 border-b pb-5">
                 <div>

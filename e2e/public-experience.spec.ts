@@ -24,8 +24,16 @@ test("无 locale 入口会进入中文公开站，并能从首页访问真实内
     page.getByRole("heading", { name: "LAWSON — AI 与工程实践" }),
   ).toBeVisible();
   await expect(
+    page.getByText(
+      "把 AI 工具、工程方法与可验证工作流，沉淀成能复用的实践记录。",
+    ),
+  ).toBeVisible();
+  await expect(
     page.getByRole("link", { name: "阅读最新文章" }),
-  ).not.toBeVisible();
+  ).toHaveAttribute("href", "/zh-CN/blog");
+  await expect(
+    page.getByRole("link", { name: "查看个人项目" }),
+  ).toHaveAttribute("href", "/zh-CN/projects");
   await expect(page.getByRole("link", { name: "LAWSON Site" })).toBeVisible();
   await expect(
     page
