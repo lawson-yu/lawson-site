@@ -6,12 +6,18 @@ test("访客可按周和主题浏览已发布精选项目详情", async ({ page 
   await expect(
     page.getByRole("heading", { name: "精选项目", exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("2026-W30", { exact: true })).toBeVisible();
-  await page.getByRole("link", { name: "2026-W30", exact: true }).click();
-  await expect(page).toHaveURL(/\?week=2026-W30$/);
-  await expect(page.getByText("当前筛选：2026-W30 · 全部标签")).toBeVisible();
+  await expect(
+    page.getByText("2026 年 7 月第 3 周", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("link", { name: "2026 年 7 月第 3 周", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\?week=2026-07-W3$/);
+  await expect(
+    page.getByText("当前筛选：2026 年 7 月第 3 周 · 全部标签"),
+  ).toBeVisible();
   await page.getByRole("link", { name: "AI 系统", exact: true }).click();
-  await expect(page).toHaveURL(/\?week=2026-W30&tag=ai-systems$/);
+  await expect(page).toHaveURL(/\?week=2026-07-W3&tag=ai-systems$/);
   await page.getByRole("link", { name: "LangChain", exact: true }).click();
 
   await expect(

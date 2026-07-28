@@ -28,7 +28,7 @@ test.describe("作者精选项目生命周期", () => {
     await page.getByLabel("适用场景").fill("验证内容资料库工作流。");
     await page.getByLabel("作者短评").fill("可重复执行的端到端验证。");
     await page.getByLabel("收录日期").fill("2026-07-20");
-    await page.getByLabel("周信息").fill("2026-W30");
+    await page.getByLabel("周信息").fill("2026-07-W3");
     await page
       .getByLabel("精选说明（Markdown）")
       .fill("# E2E 精选\n\n验证完整生命周期。");

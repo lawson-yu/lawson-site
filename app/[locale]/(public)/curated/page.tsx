@@ -11,6 +11,10 @@ import {
 import { PublicPageHeader } from "@/app/[locale]/(public)/_components/public-page-header";
 import { supportedLocale } from "@/lib/content/catalog";
 import { listPublishedCuratedProjects } from "@/lib/content/curated";
+import {
+  formatCuratedWeek,
+  normalizeCuratedWeek,
+} from "@/lib/content/curated-week";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -64,12 +68,27 @@ async function CuratedContent({ params, searchParams }: Props) {
   const { tag, topic, week } = await searchParams;
   if (locale !== supportedLocale) notFound();
   const projects = await listPublishedCuratedProjects(locale);
-  const weeks = [...new Set(projects.map((project) => project.metadata.week))];
+  const weeks = [
+    ...new Map(
+      projects.map((project) => {
+        const value = normalizeCuratedWeek(
+          project.metadata.week,
+          project.metadata.collectedAt,
+        );
+        return [value, { label: formatCuratedWeek(value), value }];
+      }),
+    ).values(),
+  ];
   const activeTag = tag ?? topic;
   const tagOptions = buildCuratedTagOptions(locale, projects, week);
   const filteredProjects = projects.filter(
     (project) =>
-      (!week || project.metadata.week === week) &&
+      (!week ||
+        project.metadata.week === week ||
+        normalizeCuratedWeek(
+          project.metadata.week,
+          project.metadata.collectedAt,
+        ) === week) &&
       (!activeTag || project.tags.some((tag) => tag.slug === activeTag)),
   );
   return (
@@ -104,16 +123,19 @@ async function CuratedContent({ params, searchParams }: Props) {
               </Link>
               {weeks.map((item) => (
                 <Link
-                  aria-current={week === item ? "page" : undefined}
+                  aria-current={week === item.value ? "page" : undefined}
                   className={`border-line rounded-control border px-4 py-2 font-mono text-xs font-bold tracking-[0.08em] ${
-                    week === item
+                    week === item.value
                       ? "bg-brand text-canvas border-brand"
                       : "bg-surface text-muted"
                   }`}
-                  href={curatedHref(locale, { tag: activeTag, week: item })}
-                  key={item}
+                  href={curatedHref(locale, {
+                    tag: activeTag,
+                    week: item.value,
+                  })}
+                  key={item.value}
                 >
-                  {item}
+                  {item.label}
                 </Link>
               ))}
               {!weeks.length ? (
@@ -133,45 +155,59 @@ async function CuratedContent({ params, searchParams }: Props) {
         </div>
 
         <p className="text-muted mt-6 font-mono text-xs">
-          当前筛选：{week ?? "全部周"} · {activeTag ?? "全部标签"}
+          当前筛选：{week ? formatCuratedWeek(week) : "全部周"} ·{" "}
+          {activeTag ?? "全部标签"}
         </p>
 
-        <div className="mt-10 grid gap-8 min-[768px]:grid-cols-2 min-[992px]:mt-16 min-[992px]:grid-cols-3">
+        <div className="mt-10 grid gap-6 min-[992px]:mt-16">
           {filteredProjects.map((project) => (
             <article
-              className="border-line bg-surface-raised flex min-h-full flex-col border-t p-6 sm:p-8"
+              className="border-line bg-surface-raised flex min-w-0 flex-col gap-6 border-t p-6 sm:p-8 md:flex-row md:items-start md:justify-between"
               key={project.slug}
             >
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <Link
+                      className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-[11px] leading-4 focus-visible:ring-2 focus-visible:outline-none"
+                      href={curatedHref(locale, { tag: tag.slug, week })}
+                      key={tag.id}
+                    >
+                      {tag.label}
+                    </Link>
+                  ))}
+                </div>
+                <h2 className="mt-6 text-3xl leading-tight font-semibold tracking-[-0.035em] [overflow-wrap:anywhere]">
                   <Link
-                    className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-[11px] leading-4 focus-visible:ring-2 focus-visible:outline-none"
-                    href={curatedHref(locale, { tag: tag.slug, week })}
-                    key={tag.id}
+                    className="hover:text-muted focus-visible:ring-brand outline-none focus-visible:ring-2"
+                    href={`/${locale}/curated/${project.slug}`}
                   >
-                    {tag.label}
+                    {project.title}
                   </Link>
-                ))}
+                </h2>
+                <p className="text-muted mt-3 leading-6">{project.summary}</p>
+                <p className="text-muted mt-4 text-sm leading-6">
+                  解决问题：{project.metadata.problem}
+                </p>
+                <p className="text-muted mt-6 font-mono text-xs">
+                  {formatCuratedWeek(
+                    project.metadata.week,
+                    project.metadata.collectedAt,
+                  )}{" "}
+                  · 收录于 {project.metadata.collectedAt}
+                </p>
               </div>
-              <h2 className="mt-8 text-3xl leading-tight font-semibold tracking-[-0.035em] [overflow-wrap:anywhere]">
-                <Link
-                  className="hover:text-muted focus-visible:ring-brand outline-none focus-visible:ring-2"
-                  href={`/${locale}/curated/${project.slug}`}
-                >
-                  {project.title}
-                </Link>
-              </h2>
-              <p className="text-muted mt-3 leading-6">{project.summary}</p>
-              <p className="text-muted mt-4 text-sm leading-6">
-                解决问题：{project.metadata.problem}
-              </p>
-              <p className="text-muted mt-auto pt-8 font-mono text-xs">
-                {project.metadata.week} · 收录于 {project.metadata.collectedAt}
-              </p>
+              {project.metadata.coverImageUrl ? (
+                <img
+                  alt={`${project.title} 精选封面`}
+                  className="rounded-media border-line aspect-video w-full shrink-0 border object-cover md:w-64 lg:w-72"
+                  src={project.metadata.coverImageUrl}
+                />
+              ) : null}
             </article>
           ))}
           {!filteredProjects.length ? (
-            <p className="text-muted border-line border-t py-10 min-[768px]:col-span-2 min-[992px]:col-span-3">
+            <p className="text-muted border-line border-t py-10">
               没有匹配内容。
               <Link
                 className="underline underline-offset-4"

@@ -66,10 +66,11 @@ const projectMetadata = z.object({
 const curatedMetadata = z.object({
   collectedAt: z.string().date(),
   commentary: z.string().trim().min(1),
+  coverImageUrl: z.string().url().nullable().optional().default(null),
   problem: z.string().trim().min(1),
   sourceRepositoryUrl: z.string().url(),
   useCases: z.string().trim().min(1),
-  week: z.string().regex(/^\d{4}-W\d{2}$/),
+  week: z.string().regex(/^\d{4}-\d{2}-W[1-5]$/),
 });
 
 function invalid(message: string): never {

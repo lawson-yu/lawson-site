@@ -89,74 +89,76 @@ async function ProjectsContent({ params, searchParams }: ProjectsPageProps) {
           />
         </div>
 
-        <div className="mt-10 grid gap-8 min-[768px]:grid-cols-2 min-[992px]:grid-cols-3">
+        <div className="mt-10 grid gap-6 min-[992px]:mt-16">
           {projects.map((project) => (
             <article
-              className="border-line bg-surface-raised flex min-h-full min-w-0 flex-col border-t p-6 sm:p-8"
+              className="border-line bg-surface-raised flex min-w-0 flex-col gap-6 border-t p-6 sm:p-8 md:flex-row md:items-start md:justify-between"
               key={project.slug}
             >
-              {project.metadata.coverImageUrl ? (
-                <img
-                  alt={`${project.title} 项目封面`}
-                  className="rounded-media border-line mb-6 aspect-video w-full border object-cover"
-                  src={project.metadata.coverImageUrl}
-                />
-              ) : null}
-              <div className="flex flex-wrap gap-2">
-                {(project.tags.length
-                  ? project.tags.map((item) => ({
-                      key: item.id,
-                      label: item.label,
-                      slug: item.slug,
-                    }))
-                  : project.metadata.techStack.map((item) => ({
-                      key: item,
-                      label: item,
-                      slug: item,
-                    }))
-                ).map((tag) => (
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap gap-2">
+                  {(project.tags.length
+                    ? project.tags.map((item) => ({
+                        key: item.id,
+                        label: item.label,
+                        slug: item.slug,
+                      }))
+                    : project.metadata.techStack.map((item) => ({
+                        key: item,
+                        label: item,
+                        slug: item,
+                      }))
+                  ).map((tag) => (
+                    <Link
+                      className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-[11px] leading-4 focus-visible:ring-2 focus-visible:outline-none"
+                      href={`/${locale}/projects?tag=${encodeURIComponent(tag.slug)}`}
+                      key={tag.key}
+                    >
+                      {tag.label}
+                    </Link>
+                  ))}
+                </div>
+                <h2 className="mt-6 text-3xl leading-tight font-semibold tracking-[-0.035em] [overflow-wrap:anywhere]">
                   <Link
-                    className="border-line text-muted rounded-control bg-surface hover:text-brand focus-visible:ring-brand border px-3 py-1.5 font-mono text-[11px] leading-4 focus-visible:ring-2 focus-visible:outline-none"
-                    href={`/${locale}/projects?tag=${encodeURIComponent(tag.slug)}`}
-                    key={tag.key}
+                    className="hover:text-muted focus-visible:ring-brand outline-none focus-visible:ring-2"
+                    href={`/${locale}/projects/${project.slug}`}
                   >
-                    {tag.label}
+                    {project.title}
                   </Link>
-                ))}
-              </div>
-              <h2 className="mt-8 text-3xl leading-tight font-semibold tracking-[-0.035em] [overflow-wrap:anywhere]">
-                <Link
-                  className="hover:text-muted focus-visible:ring-brand outline-none focus-visible:ring-2"
-                  href={`/${locale}/projects/${project.slug}`}
-                >
-                  {project.title}
-                </Link>
-              </h2>
-              <p className="text-muted mt-3 leading-6">{project.summary}</p>
-              <p className="text-muted mt-4 text-sm leading-6">
-                问题：{project.metadata.problem}
-              </p>
-              <p className="text-muted mt-1 text-sm leading-6">
-                成果：{project.metadata.outcomes}
-              </p>
-              <div className="mt-auto flex flex-wrap gap-4 pt-8 font-mono text-xs font-medium">
-                <a
-                  href={project.metadata.repositoryUrl}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  GitHub
-                </a>
-                {project.metadata.demoUrl ? (
+                </h2>
+                <p className="text-muted mt-3 leading-6">{project.summary}</p>
+                <p className="text-muted mt-4 text-sm leading-6">
+                  问题：{project.metadata.problem}
+                </p>
+                <p className="text-muted mt-1 text-sm leading-6">
+                  成果：{project.metadata.outcomes}
+                </p>
+                <div className="mt-6 flex flex-wrap gap-4 font-mono text-xs font-medium">
                   <a
-                    href={project.metadata.demoUrl}
+                    href={project.metadata.repositoryUrl}
                     rel="noreferrer"
                     target="_blank"
                   >
-                    演示
+                    GitHub
                   </a>
-                ) : null}
+                  {project.metadata.demoUrl ? (
+                    <a
+                      href={project.metadata.demoUrl}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      演示
+                    </a>
+                  ) : null}
+                </div>
               </div>
+              {project.metadata.coverImageUrl ? (
+                <img
+                  alt={`${project.title} 项目封面`}
+                  className="rounded-media border-line aspect-video w-full shrink-0 border object-cover md:w-64 lg:w-72"
+                  src={project.metadata.coverImageUrl}
+                />
+              ) : null}
             </article>
           ))}
           {!projects.length ? (

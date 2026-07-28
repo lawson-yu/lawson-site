@@ -8,6 +8,7 @@ const curatedMetadataSchema = z.object({
     .trim()
     .min(1, "短评不能为空")
     .max(1_000, "短评长度无效"),
+  coverImageUrl: z.url("封面图链接无效").nullable().optional().default(null),
   problem: z
     .string()
     .trim()
@@ -19,7 +20,7 @@ const curatedMetadataSchema = z.object({
     .trim()
     .min(1, "适用场景不能为空")
     .max(1_000, "适用场景长度无效"),
-  week: z.string().regex(/^\d{4}-W\d{2}$/, "周信息格式应为 YYYY-Www"),
+  week: z.string().regex(/^\d{4}-\d{2}-W[1-5]$/, "周信息格式应为 YYYY-MM-Wn"),
 });
 
 const draftCuratedSchema = z.object({

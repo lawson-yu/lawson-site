@@ -134,7 +134,7 @@ test.describe("受限导入契约", () => {
         externalId: `e2e-import-curated-${suffix}`,
         kind: "curated",
         metadata:
-          '{"sourceRepositoryUrl":"https://example.com/repository","problem":"问题","useCases":"用途","commentary":"短评","collectedAt":"2026-07-21","week":"2026-W30"}',
+          '{"sourceRepositoryUrl":"https://example.com/repository","problem":"问题","useCases":"用途","commentary":"短评","collectedAt":"2026-07-21","week":"2026-07-W3"}',
         slug: `e2e-import-curated-${suffix}`,
       }),
     );

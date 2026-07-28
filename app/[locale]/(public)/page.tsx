@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { RiverHero } from "@/app/[locale]/(public)/_components/river-hero";
 import { listPublishedBlogs, supportedLocale } from "@/lib/content/catalog";
 import { listPublishedCuratedProjects } from "@/lib/content/curated";
+import { formatCuratedWeek } from "@/lib/content/curated-week";
 import { listPublishedProjects } from "@/lib/content/projects";
 
 /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5
@@ -208,7 +209,10 @@ async function HomeContent({ params }: HomePageProps) {
             {curated[0] ? (
               <article className="border-brand/20 bg-surface-raised mt-8 border p-6 sm:p-8">
                 <p className="text-muted font-mono text-xs font-bold tracking-[0.14em]">
-                  {curated[0].metadata.week}
+                  {formatCuratedWeek(
+                    curated[0].metadata.week,
+                    curated[0].metadata.collectedAt,
+                  )}
                 </p>
                 <h3 className="mt-6 min-w-0 [overflow-wrap:anywhere]">
                   <Link

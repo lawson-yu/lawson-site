@@ -6,6 +6,7 @@ import type { WorkspaceTag } from "./workspace";
 export type CuratedMetadata = {
   collectedAt: string;
   commentary: string;
+  coverImageUrl: string | null;
   problem: string;
   sourceRepositoryUrl: string;
   useCases: string;

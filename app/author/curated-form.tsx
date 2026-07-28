@@ -6,6 +6,7 @@ import { useState } from "react";
 import { MediaUpload } from "./media-upload";
 
 import type { CuratedProject } from "@/lib/content/curated";
+import { normalizeCuratedWeek } from "@/lib/content/curated-week";
 import type { WorkspaceTag } from "@/lib/content/workspace";
 
 export function CuratedForm({
@@ -36,6 +37,7 @@ export function CuratedForm({
           metadata: {
             collectedAt: formData.get("collectedAt"),
             commentary: formData.get("commentary"),
+            coverImageUrl: formData.get("coverImageUrl") || null,
             problem: formData.get("problem"),
             sourceRepositoryUrl: formData.get("sourceRepositoryUrl"),
             useCases: formData.get("useCases"),
@@ -104,6 +106,15 @@ export function CuratedForm({
           required
         />
       </label>
+      <label className="grid gap-2 text-sm font-semibold">
+        主图链接（可选）
+        <input
+          className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
+          defaultValue={project?.metadata.coverImageUrl ?? ""}
+          name="coverImageUrl"
+          type="url"
+        />
+      </label>
       {fields.map(([label, name, value, kind]) => (
         <label className="grid gap-2 text-sm font-semibold" key={name}>
           {label}
@@ -132,10 +143,17 @@ export function CuratedForm({
           周信息
           <input
             className="border-line bg-canvas focus-visible:ring-brand rounded-md border px-3 py-3 outline-none focus-visible:ring-2"
-            defaultValue={project?.metadata.week}
+            defaultValue={
+              project
+                ? normalizeCuratedWeek(
+                    project.metadata.week,
+                    project.metadata.collectedAt,
+                  )
+                : undefined
+            }
             name="week"
-            pattern="\d{4}-W\d{2}"
-            placeholder="2026-W30"
+            pattern="\d{4}-\d{2}-W[1-5]"
+            placeholder="2026-07-W3"
             required
           />
         </label>

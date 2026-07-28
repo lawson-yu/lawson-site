@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { MarkdownContent } from "../../blog/[slug]/markdown-content";
 import { supportedLocale } from "@/lib/content/catalog";
 import { getPublishedCuratedProject } from "@/lib/content/curated";
+import { formatCuratedWeek } from "@/lib/content/curated-week";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -52,12 +53,22 @@ async function CuratedDetailContent({ params }: Props) {
           ← 精选项目
         </Link>
         <p className="tracking-eyebrow text-accent mt-10 text-xs font-bold">
-          {project.metadata.week}
+          {formatCuratedWeek(
+            project.metadata.week,
+            project.metadata.collectedAt,
+          )}
         </p>
         <h1 className="mt-4 text-4xl font-medium tracking-tight sm:text-6xl">
           {project.title}
         </h1>
         <p className="text-muted mt-6 text-xl leading-8">{project.summary}</p>
+        {project.metadata.coverImageUrl ? (
+          <img
+            alt={`${project.title} 精选封面`}
+            className="rounded-media border-line mt-10 aspect-video w-full border object-cover"
+            src={project.metadata.coverImageUrl}
+          />
+        ) : null}
         <dl className="border-line mt-12 grid gap-8 border-y py-8 sm:grid-cols-2">
           <div>
             <dt className="font-bold">解决的问题</dt>
@@ -96,7 +107,7 @@ async function CuratedDetailContent({ params }: Props) {
             <dd className="text-muted mt-2">{project.metadata.collectedAt}</dd>
           </div>
           <a
-            className="bg-action text-canvas w-fit rounded-md px-4 py-3 font-bold focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="bg-action text-canvas inline-flex w-fit items-center justify-center rounded-md px-4 py-3 leading-none font-bold focus-visible:outline-2 focus-visible:outline-offset-2"
             href={project.metadata.sourceRepositoryUrl}
             rel="noreferrer"
             target="_blank"
@@ -123,7 +134,7 @@ function RelatedLinks({ locale }: { locale: string }) {
       className="bg-surface text-ink border-line border-y"
       aria-label="继续浏览"
     >
-      <div className="max-w-reading mx-auto px-4 py-12 sm:px-6">
+      <div className="max-w-reading mx-auto px-4 pt-12 sm:px-6">
         <p className="tracking-eyebrow text-brand text-xs font-bold">
           CONTINUE READING
         </p>
