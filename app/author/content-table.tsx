@@ -1,9 +1,19 @@
 import Link from "next/link";
+import { Fragment } from "react";
 
 import { Eye, Plus } from "lucide-react";
 
 import { getContentPageCount } from "./pagination";
 import { Badge } from "@/components/ui/badge";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -36,6 +46,10 @@ export function ContentTable({
   total: number;
 }) {
   const totalPages = getContentPageCount(total);
+  const pages = [1, page - 1, page, page + 1, totalPages].filter(
+    (value, index, values) =>
+      value > 0 && value <= totalPages && values.indexOf(value) === index,
+  );
 
   return (
     <main>
@@ -109,38 +123,39 @@ export function ContentTable({
           ) : null}
         </div>
         {totalPages > 1 ? (
-          <nav
-            aria-label={`${title}分页`}
-            className="mt-6 flex items-center justify-between gap-4"
-          >
-            {page > 1 ? (
-              <Link
-                className="border-line hover:bg-surface rounded-md border px-4 py-2 text-sm font-bold"
-                href={`${contentBase}?page=${page - 1}`}
-              >
-                上一页
-              </Link>
-            ) : (
-              <span className="border-line text-muted rounded-md border px-4 py-2 text-sm font-bold">
-                上一页
-              </span>
-            )}
-            <span className="text-muted text-sm">
-              第 {page} / {totalPages} 页
-            </span>
-            {page < totalPages ? (
-              <Link
-                className="border-line hover:bg-surface rounded-md border px-4 py-2 text-sm font-bold"
-                href={`${contentBase}?page=${page + 1}`}
-              >
-                下一页
-              </Link>
-            ) : (
-              <span className="border-line text-muted rounded-md border px-4 py-2 text-sm font-bold">
-                下一页
-              </span>
-            )}
-          </nav>
+          <Pagination aria-label={`${title}分页`} className="mt-6">
+            <PaginationContent>
+              {page > 1 ? (
+                <PaginationItem>
+                  <PaginationPrevious
+                    href={`${contentBase}?page=${page - 1}`}
+                  />
+                </PaginationItem>
+              ) : null}
+              {pages.map((value, index) => (
+                <Fragment key={value}>
+                  {index > 0 && value - pages[index - 1] > 1 ? (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : null}
+                  <PaginationItem>
+                    <PaginationLink
+                      href={`${contentBase}?page=${value}`}
+                      isActive={value === page}
+                    >
+                      {value}
+                    </PaginationLink>
+                  </PaginationItem>
+                </Fragment>
+              ))}
+              {page < totalPages ? (
+                <PaginationItem>
+                  <PaginationNext href={`${contentBase}?page=${page + 1}`} />
+                </PaginationItem>
+              ) : null}
+            </PaginationContent>
+          </Pagination>
         ) : null}
       </section>
     </main>
